@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>DigitalSignature</name>
+	<name>FreeRTOS</name>
 	<comment></comment>
 	<projects>
-		<project>lpc_board_nxp_lpcxpresso_1549</project>
 		<project>lpc_chip_15xx</project>
-		<project>FreeRTOS</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -23,7 +21,6 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
