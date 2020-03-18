@@ -43,6 +43,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/portable/GCC/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\Ville Vainio\Documents\MCUXpressoIDE_10.2.1_795\mbed\mbedtls-2.16.5\include&quot;"/>
 								</option>
 								<option id="com.crt.advproject.cpp.misc.dialect.1340468295" name="Language standard" superClass="com.crt.advproject.cpp.misc.dialect" useByScannerDiscovery="true" value="com.crt.advproject.misc.dialect.cpp11" valueType="enumerated"/>
 								<inputType id="com.crt.advproject.compiler.cpp.input.1385081061" superClass="com.crt.advproject.compiler.cpp.input"/>
@@ -70,6 +71,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/portable/GCC/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\Ville Vainio\Documents\MCUXpressoIDE_10.2.1_795\mbed\mbedtls-2.16.5\include&quot;"/>
 								</option>
 								<option id="com.crt.advproject.c.misc.dialect.1214503143" name="Language standard" superClass="com.crt.advproject.c.misc.dialect" useByScannerDiscovery="true" value="com.crt.advproject.misc.dialect.c11" valueType="enumerated"/>
 								<inputType id="com.crt.advproject.compiler.input.762150202" superClass="com.crt.advproject.compiler.input"/>
@@ -180,6 +182,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/portable/GCC/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\Ville Vainio\Documents\MCUXpressoIDE_10.2.1_795\mbed\mbedtls-2.16.5\include&quot;"/>
 								</option>
 								<option id="com.crt.advproject.cpp.misc.dialect.2132916182" name="Language standard" superClass="com.crt.advproject.cpp.misc.dialect" value="com.crt.advproject.misc.dialect.c++11" valueType="enumerated"/>
 								<inputType id="com.crt.advproject.compiler.cpp.input.602827615" superClass="com.crt.advproject.compiler.cpp.input"/>
@@ -207,6 +210,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/FreeRTOS/src/portable/GCC/ARM_CM3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\Ville Vainio\Documents\MCUXpressoIDE_10.2.1_795\mbed\mbedtls-2.16.5\include&quot;"/>
 								</option>
 								<option id="com.crt.advproject.c.misc.dialect.1274164778" name="Language standard" superClass="com.crt.advproject.c.misc.dialect" value="com.crt.advproject.misc.dialect.c11" valueType="enumerated"/>
 								<inputType id="com.crt.advproject.compiler.input.650479084" superClass="com.crt.advproject.compiler.input"/>
@@ -275,9 +279,6 @@
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="DigitalSignature.com.crt.advproject.projecttype.exe.2123159009" name="Executable" projectType="com.crt.advproject.projecttype.exe"/>
-	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="com.crt.config">
@@ -352,4 +353,25 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="com.crt.advproject"/>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.593713440;com.crt.advproject.config.exe.debug.593713440.;com.crt.advproject.gas.exe.debug.461682970;com.crt.advproject.assembler.input.736979782">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.593713440;com.crt.advproject.config.exe.debug.593713440.;com.crt.advproject.cpp.exe.debug.159430023;com.crt.advproject.compiler.cpp.input.1385081061">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.593713440;com.crt.advproject.config.exe.debug.593713440.;com.crt.advproject.gcc.exe.debug.1457516877;com.crt.advproject.compiler.input.762150202">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.1883086725;com.crt.advproject.config.exe.release.1883086725.;com.crt.advproject.gcc.exe.release.1156736561;com.crt.advproject.compiler.input.650479084">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.1883086725;com.crt.advproject.config.exe.release.1883086725.;com.crt.advproject.gas.exe.release.693317045;com.crt.advproject.assembler.input.1935399523">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.1883086725;com.crt.advproject.config.exe.release.1883086725.;com.crt.advproject.cpp.exe.release.1675004483;com.crt.advproject.compiler.cpp.input.602827615">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+	</storageModule>
 </cproject>

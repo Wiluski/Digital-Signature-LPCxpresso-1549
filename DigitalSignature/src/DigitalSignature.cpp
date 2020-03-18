@@ -19,11 +19,16 @@
 #include <DigitalIoPin.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
 #include "timers.h"
 #include "Fmutex.h"
+#include "event_groups.h"
 #include "vRSATask.h"
 #include "vWatchDog.h"
 #include "vECCTask.h"
+
+#define SALT_SIZE 5
+#define PASSWORD_SIZE 8
 
 // TODO: insert other include files here
 
@@ -59,10 +64,12 @@ int main(void) {
 
 	//initialize the set up hardware
 	prvSetupHardware();
+	//passwordQueue = xQueueCreate((SALT_SIZE + PASSWORD_SIZE - 1), sizeof(char));
 	//initialize digital input pins
 	//sw1 = new DigitalIoPin(0,17, DigitalIoPin::pullup, true);
 	//sw2 = new DigitalIoPin(1,11, DigitalIoPin::pullup, true);
 	//sw3 = new DigitalIoPin(1, 9, DigitalIoPin::pullup, true);
+	//xEventGroup = xEventGroupCreate();
 
 	xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
@@ -73,7 +80,9 @@ int main(void) {
 	xTaskCreate(vWatchDog, "WatchDog",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
-
+	/*xTaskCreate(vPasswordFile, "PasswordFile",
+			configMINIMAL_STACK_SIZE *2, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);*/
 	/* Start the scheduler */
 	    vTaskStartScheduler();
 
