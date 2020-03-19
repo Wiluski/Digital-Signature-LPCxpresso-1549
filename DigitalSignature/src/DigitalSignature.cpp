@@ -19,16 +19,49 @@
 #include <DigitalIoPin.h>
 #include "FreeRTOS.h"
 #include "task.h"
-#include "queue.h"
-#include "timers.h"
-#include "Fmutex.h"
 #include "event_groups.h"
 #include "vRSATask.h"
 #include "vWatchDog.h"
 #include "vECCTask.h"
+#include "ITM_write.h"
+#include "fstream"
+
+//using namespace std;
+
+
+#if !defined(MBEDTLS_CONFIG_FILE)
+#include "mbedtls/config.h"
+#else
+#include MBEDTLS_CONFIG_FILE
+#endif
+/*
+#if defined(MBEDTLS_PLATFORM_C)
+#include "mbedtls/platform.h"
+#else
+#include <stdlib.h>
+#include <stdio.h>
+#define mbedtls_printf       printf
+#define mbedtls_exit         exit
+#define MBEDTLS_EXIT_SUCCESS EXIT_SUCCESS
+#define MBEDTLS_EXIT_FAILURE EXIT_FAILURE
+#endif
+
+#if defined(MBEDTLS_MD5_C)
+#include "mbedtls/md5.h"
+#endif*/
+#if DEBUG_LEVEL > 0
+#include "mbedtls/debug.h"
+#endif
+
+#include "mbedtls/platform.h"
+#include "mbedtls/sha256.h"
+#include "mbedtls/md.h"
+#include <cstdio>
+
 
 #define SALT_SIZE 5
 #define PASSWORD_SIZE 8
+
 
 // TODO: insert other include files here
 
@@ -57,21 +90,52 @@ void vConfigureTimerForRunTimeStats( void ) {
 }
 
 }
+static const char hello_str[] = "Hello, world!";
+static const unsigned char *hello_buffer = (const unsigned char *) hello_str;
+static const size_t hello_len = sizeof hello_str - 1;
 
+
+void vTestTask(void *pvParameters){
+
+	unsigned char digest[32];
+	//int c;
+
+	mbedtls_sha256_ret(hello_buffer, hello_len, digest, 0);
+
+	//Board_UARTPutChar('\n');
+	//Board_UARTPutChar('\r');
+	for(size_t i = 0; i < sizeof digest; i++){
+		//ITM_write("02%x", digest[i]);
+		DEBUGOUT("02%x", digest[i]);
+		//c = digest[i];
+		//Board_UARTPutChar(c);
+	}
+	DEBUGOUT("\n\r");
+
+	//Board_UARTPutChar('\n');
+	//Board_UARTPutChar('\r');
+	//Board_UARTPutSTR(hello_str);
+
+	DEBUGOUT("OK \n\r");
+	//ITM_write(digest);
+
+	while(1){
+
+	}
+}
 
 
 int main(void) {
 
 	//initialize the set up hardware
 	prvSetupHardware();
-	//passwordQueue = xQueueCreate((SALT_SIZE + PASSWORD_SIZE - 1), sizeof(char));
-	//initialize digital input pins
-	//sw1 = new DigitalIoPin(0,17, DigitalIoPin::pullup, true);
-	//sw2 = new DigitalIoPin(1,11, DigitalIoPin::pullup, true);
-	//sw3 = new DigitalIoPin(1, 9, DigitalIoPin::pullup, true);
-	//xEventGroup = xEventGroupCreate();
 
-	xTaskCreate(vRSATask, "RSATask",
+
+	xTaskCreate(vTestTask, "TestTask",
+			configMINIMAL_STACK_SIZE *4, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);
+
+	/*xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
 	xTaskCreate(vECCTask, "ECCTask",
@@ -80,7 +144,7 @@ int main(void) {
 	xTaskCreate(vWatchDog, "WatchDog",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
-	/*xTaskCreate(vPasswordFile, "PasswordFile",
+	xTaskCreate(vPasswordFile, "PasswordFile",
 			configMINIMAL_STACK_SIZE *2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);*/
 	/* Start the scheduler */

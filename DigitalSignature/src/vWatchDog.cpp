@@ -22,10 +22,6 @@ extern EventGroupHandle_t xEventGroup;
 
 void vWatchDog(void *pvParameters){
 
-	TickType_t tickCount1 = 0;
-	TickType_t tickCount2 = 0;
-	const TickType_t timeWait = portMAX_DELAY;
-	EventBits_t xBits;
 
 	while(1){
 		//xBits = xEventGroupWaitBits(xEventGroup, ALL_SYNC_BITS,
