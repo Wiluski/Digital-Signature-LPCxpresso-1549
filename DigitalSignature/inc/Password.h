@@ -30,6 +30,10 @@ public:
 	Password(const Password &cpy);
 	const Password &operator=(const Password &eq);
 	void hash256();
+
+	//const unsigned char getDigest(const unsigned char save[]) const;
+	const unsigned char* digestTest() const;
+	const char* passR() const;
 	virtual ~Password();
 private:
 	char *pass;

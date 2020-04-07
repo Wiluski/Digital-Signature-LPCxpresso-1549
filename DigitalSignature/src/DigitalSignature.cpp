@@ -16,15 +16,13 @@
 #endif
 
 #include <cr_section_macros.h>
-#include <DigitalIoPin.h>
 #include "FreeRTOS.h"
+#include "Password.h"
 #include "task.h"
-#include "event_groups.h"
 #include "vRSATask.h"
 #include "vWatchDog.h"
 #include "vECCTask.h"
 #include "ITM_write.h"
-#include "fstream"
 
 //using namespace std;
 
@@ -34,30 +32,19 @@
 #else
 #include MBEDTLS_CONFIG_FILE
 #endif
-/*
-#if defined(MBEDTLS_PLATFORM_C)
-#include "mbedtls/platform.h"
-#else
-#include <stdlib.h>
-#include <stdio.h>
-#define mbedtls_printf       printf
-#define mbedtls_exit         exit
-#define MBEDTLS_EXIT_SUCCESS EXIT_SUCCESS
-#define MBEDTLS_EXIT_FAILURE EXIT_FAILURE
+
+
+
+#if defined(MBEDTLS_BIGNUM_C) && defined(MBEDTLS_ENTROPY_C) && \
+    defined(MBEDTLS_RSA_C) && defined(MBEDTLS_GENPRIME) && \
+    defined(MBEDTLS_FS_IO) && defined(MBEDTLS_CTR_DRBG_C)
+#include "mbedtls/entropy.h"
+#include "mbedtls/ctr_drbg.h"
+#include "mbedtls/bignum.h"
+#include "mbedtls/x509.h"
+#include "mbedtls/rsa.h"
+
 #endif
-
-#if defined(MBEDTLS_MD5_C)
-#include "mbedtls/md5.h"
-#endif*/
-#if DEBUG_LEVEL > 0
-#include "mbedtls/debug.h"
-#endif
-
-#include "mbedtls/platform.h"
-#include "mbedtls/sha256.h"
-#include "mbedtls/md.h"
-#include <cstdio>
-
 
 #define SALT_SIZE 5
 #define PASSWORD_SIZE 8
@@ -90,35 +77,31 @@ void vConfigureTimerForRunTimeStats( void ) {
 }
 
 }
-static const char hello_str[] = "Hello, world!";
-static const unsigned char *hello_buffer = (const unsigned char *) hello_str;
-static const size_t hello_len = sizeof hello_str - 1;
 
 
 void vTestTask(void *pvParameters){
+	Password* test1 = new Password("hello world!", "6asfh4");
+	test1->hash256();
+	Board_UARTPutSTR((char*)test1->digestTest());
+	Board_UARTPutChar('\n');
+	Board_UARTPutChar('\r');
+	Board_UARTPutSTR("ok!\n\r");
 
-	unsigned char digest[32];
-	//int c;
+	int ret = 0;
+	FILE *pub = NULL;
+	FILE *priv = NULL;
+	mbedtls_rsa_context rsa;
+	mbedtls_entropy_context entropy;
+	mbedtls_ctr_drbg_context ctr;
 
-	mbedtls_sha256_ret(hello_buffer, hello_len, digest, 0);
+	mbedtls_ctr_drbg_init(&ctr);
 
-	//Board_UARTPutChar('\n');
-	//Board_UARTPutChar('\r');
-	for(size_t i = 0; i < sizeof digest; i++){
-		//ITM_write("02%x", digest[i]);
-		DEBUGOUT("02%x", digest[i]);
-		//c = digest[i];
-		//Board_UARTPutChar(c);
-	}
-	DEBUGOUT("\n\r");
+	mbedtls_entropy_init(&entropy);
 
-	//Board_UARTPutChar('\n');
-	//Board_UARTPutChar('\r');
-	//Board_UARTPutSTR(hello_str);
 
-	DEBUGOUT("OK \n\r");
-	//ITM_write(digest);
 
+
+	delete[] test1;
 	while(1){
 
 	}

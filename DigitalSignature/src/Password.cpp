@@ -63,14 +63,39 @@ const Password & Password::operator=(const Password &eq){
 
 
 void Password::hash256(){
-	const size_t len = (*pass + *salt) -1 ;
+	char* tmp = new char[strlen(pass) + strlen(salt)];
+	const size_t len = sizeof((*pass + *salt) -1 );
 	delete[] hash;
-	hash = new unsigned char;
-	hash = (unsigned char*) (*pass + *salt);
+	strcpy(tmp, pass);
+	strcat(tmp, salt);
+
+	hash = (unsigned char*) tmp;
+	delete[] tmp;
+	//delete[] pass;
+	//delete[] salt;
+
 	mbedtls_sha256_ret(hash, len, digest, 0);
 
 
+
 }
+
+/*const unsigned char Password::getDigest(const unsigned char save[]) const{
+	save = new unsigned char[sizeof(digest) + 1]();
+	for (size_t i; i <= sizeof(digest); i++){
+		save[i] = digest[i];
+	}
+	return save;
+}*/
+
+const unsigned char* Password::digestTest() const{
+	return hash;
+}
+
+const char* Password::passR() const{
+	return pass;
+}
+
 
 Password::~Password() {
 	delete[] hash;
