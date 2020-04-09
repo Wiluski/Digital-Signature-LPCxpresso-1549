@@ -10,29 +10,6 @@
 QueueHandle_t rsaQueue;
 QueueHandle_t eccQueue;
 
-char randomCharacter(){
-	int min = 32;
-	int max = 126;
-	int asciiChar = rand() % max + min;
-	return asciiChar;
-}
-
-Password initialize(){
-	Password init;
-	char pass[8];
-	char salt[5];
-	for(int i = 0; i < 8; i++){
-		pass[i] = randomCharacter();
-	}
-	for(int i = 0; i < 5; i++){
-		salt[i] = randomCharacter();
-	}
-	init = Password(pass,salt);
-
-	return init;
-}
-
-
 void vPasswordFile(void *pvParameters){
 
 	int size = 6;
@@ -50,4 +27,29 @@ void vPasswordFile(void *pvParameters){
 	}
 }
 
+char randomCharacter(){
+	int min = 32;
+	int max = 126;
+	int asciiChar = rand() % max + min;
+	return asciiChar;
+}
+
+Password initialize(){
+	Password init;
+	char* pass;
+	char* salt;
+	pass = new char[8];
+	salt = new char[5];
+	for(int i = 0; i < 8; i++){
+		pass[i] = randomCharacter();
+	}
+	for(int i = 0; i < 5; i++){
+		salt[i] = randomCharacter();
+	}
+	init = Password(pass,salt);
+
+	delete[] pass;
+	delete[] salt;
+	return init;
+}
 

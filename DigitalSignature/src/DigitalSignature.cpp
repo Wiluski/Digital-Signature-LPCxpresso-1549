@@ -20,6 +20,7 @@
 #include "task.h"
 #include "semphr.h"
 #include "Password.h"
+#include "vPasswordFile.h"
 #include "vRSATask.h"
 #include "vWatchDog.h"
 #include "vECCTask.h"
@@ -78,10 +79,13 @@ int main(void) {
 	rsaQueue = xQueueCreate(QUEUE_SIZE, sizeof(Password));
 	eccQueue = xQueueCreate(QUEUE_SIZE, sizeof(Password));
 
-	xTaskCreate(vTestTask, "TestTask",
-			configMINIMAL_STACK_SIZE *4, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);
 
+	xTaskCreate(vTestTask, "TestTask",
+			configMINIMAL_STACK_SIZE *2, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);
+	xTaskCreate(vPasswordFile, "PasswordFile",
+			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);
 	xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);

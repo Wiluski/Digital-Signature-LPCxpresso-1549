@@ -5,12 +5,7 @@
  *      Author: Ville Vainio
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
-#include "Fmutex.h"
-#include "DigitalIoPin.h"
-#include "event_groups.h"
+
 #include "vECCTask.h"
 
 extern QueueHandle_t eccQueue;

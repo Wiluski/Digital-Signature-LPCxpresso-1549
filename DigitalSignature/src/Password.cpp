@@ -28,6 +28,18 @@ Password::Password(const Password &cpy){
 
 }
 
+const Password & Password::operator=(const Password &eq){
+	if(this != &eq){
+		delete[] pass;
+		delete[] salt;
+		pass = new char[strlen(eq.pass) + 1];
+		salt = new char[strlen(eq.salt) + 1];
+		strcpy(pass, eq.pass);
+		strcpy(salt, eq.salt);
+	}
+	return *this;
+}
+
 
 void Password::hash256(){
 	char* tmp = new char[strlen(pass) + strlen(salt)];
