@@ -8,10 +8,14 @@
 #ifndef VPASSWORDFILE_H_
 #define VPASSWORDFILE_H_
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include <cstdlib>
+#include "queue.h"
+#include "Password.h"
 
 char randomCharacter();
-void password();
-void salt();
+Password initialize();
 
 void vPasswordFile(void *pvParameters);
 

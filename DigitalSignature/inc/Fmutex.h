@@ -4,10 +4,13 @@
  *  Created on: Sep 2, 2019
  *      Author: Ville Vainio
  */
-#include "semphr.h"
 
 #ifndef FMUTEX_H_
 #define FMUTEX_H_
+
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "task.h"
 
 class Fmutex{
 public:

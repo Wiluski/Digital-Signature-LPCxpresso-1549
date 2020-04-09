@@ -24,13 +24,13 @@
 
 #include "string.h"
 
+
 class Password {
 public:
 	Password(const char *pass0 = "", const char *salt0 = "");
 	Password(const Password &cpy);
 	const Password &operator=(const Password &eq);
 	void hash256();
-
 	//const unsigned char getDigest(const unsigned char save[]) const;
 	const unsigned char* digestTest() const;
 	const char* passR() const;

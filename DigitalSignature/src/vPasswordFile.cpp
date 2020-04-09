@@ -5,41 +5,48 @@
  *      Author: Ville Vainio
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
-//#include "cstdlib.h"
-//#include "time.h
-#include "queue.h"
 #include "vPasswordFile.h"
 
 QueueHandle_t passwordQueue;
 
 
-/*char randomCharacter(){
+
+
+char randomCharacter(){
 	int min = 32;
 	int max = 126;
-	int asciiChar = rand() % 126 + 32;
+	int asciiChar = rand() % max + min;
 	return asciiChar;
 }
 
-void password(){
-	char password [8];
+Password initialize(){
+	Password init;
+	char pass[8];
+	char salt[5];
 	for(int i = 0; i < 8; i++){
-		password[i] = randomCharacter();
+		pass[i] = randomCharacter();
 	}
-}
-
-void salt(){
-	char salt [5];
 	for(int i = 0; i < 5; i++){
 		salt[i] = randomCharacter();
 	}
-}*/
+	init = Password(pass,salt);
+
+	return init;
+}
 
 
 void vPasswordFile(void *pvParameters){
 
+	int size = 6;
+	int i = 0;
+	Password ps[size];
+
 	while(1){
+		if(i < size){
+			ps[i] = initialize();
+			xQueueSendToFront(passwordQueue, (void*) &ps[i], portMAX_DELAY);
+			i++;
+		}
 
 	}
 }

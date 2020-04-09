@@ -17,8 +17,9 @@
 
 #include <cr_section_macros.h>
 #include "FreeRTOS.h"
-#include "Password.h"
 #include "task.h"
+#include "semphr.h"
+#include "Password.h"
 #include "vRSATask.h"
 #include "vWatchDog.h"
 #include "vECCTask.h"
@@ -46,9 +47,9 @@
 
 #endif
 
-#define SALT_SIZE 5
-#define PASSWORD_SIZE 8
+extern QueueHandle_t passwordQueue;
 
+#define QUEUE_SIZE 6
 
 // TODO: insert other include files here
 
@@ -80,58 +81,7 @@ void vConfigureTimerForRunTimeStats( void ) {
 
 
 void vTestTask(void *pvParameters){
-	Password* test1 = new Password("hello world!", "6asfh4");
-	test1->hash256();
-	Board_UARTPutSTR((char*)test1->digestTest());
-	Board_UARTPutChar('\n');
-	Board_UARTPutChar('\r');
-	Board_UARTPutSTR("ok!\n\r");
 
-	int ret = 0;
-	const char *pers = "rsa_generator";
-
-	//FILE *pub = NULL;
-	//FILE *priv = NULL;
-
-
-	mbedtls_rsa_context rsa;
-	mbedtls_entropy_context entropy;
-	mbedtls_ctr_drbg_context ctr;
-
-	mbedtls_ctr_drbg_init(&ctr);
-
-	mbedtls_entropy_init(&entropy);
-
-	//ret = mbedtls_ctr_drbg_seed(&ctr, mbedtls_entropy_func, &entropy, (const unsigned char*) pers, strlen(pers));
-
-	mbedtls_ctr_drbg_seed(&ctr, mbedtls_entropy_func, &entropy, (const unsigned char*) pers, strlen(pers));
-	mbedtls_rsa_init(&rsa, MBEDTLS_RSA_PKCS_V15, 0);
-
-	mbedtls_rsa_gen_key(&rsa, mbedtls_ctr_drbg_random, &ctr, 2048, 65537);
-
-	//rsa.D;
-	/*rsa.D;
-	pub = fopen("rsa_pub", "wb+");
-	priv = fopen("rsa_priv", "wb+");
-
-	mbedtls_mpi_write_file(" N = ", &rsa.N, 16, pub);
-	mbedtls_mpi_write_file(" E = ", &rsa.E, 16, pub);
-
-	mbedtls_mpi_write_file(" N = ", &rsa.N, 16, priv);
-	mbedtls_mpi_write_file(" E = ", &rsa.E, 16, priv);
-	mbedtls_mpi_write_file(" D = ", &rsa.D, 16, priv);
-	mbedtls_mpi_write_file(" P = ", &rsa.P, 16, priv);
-	mbedtls_mpi_write_file(" Q = ", &rsa.Q, 16, priv);
-	mbedtls_mpi_write_file(" DP = ", &rsa.DP, 16, priv);
-	mbedtls_mpi_write_file(" DQ = ", &rsa.DQ, 16, priv);
-	mbedtls_mpi_write_file(" QP = ", &rsa.QP, 16, priv);*/
-
-	delete test1;
-    mbedtls_rsa_free(&rsa);
-    mbedtls_ctr_drbg_free(&ctr);
-    mbedtls_entropy_free(&entropy);
-    //fclose(pub);
-   // fclose(priv);
 	while(1){
 
 	}
@@ -143,14 +93,16 @@ int main(void) {
 	//initialize the set up hardware
 	prvSetupHardware();
 
+	passwordQueue = xQueueCreate(QUEUE_SIZE, sizeof(Password));
 
 	xTaskCreate(vTestTask, "TestTask",
 			configMINIMAL_STACK_SIZE *4, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
 
-	/*xTaskCreate(vRSATask, "RSATask",
+	xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
+	/*
 	xTaskCreate(vECCTask, "ECCTask",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);

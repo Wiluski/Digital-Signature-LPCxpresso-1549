@@ -80,6 +80,7 @@ void Password::hash256(){
 
 }
 
+
 /*const unsigned char Password::getDigest(const unsigned char save[]) const{
 	save = new unsigned char[sizeof(digest) + 1]();
 	for (size_t i; i <= sizeof(digest); i++){
@@ -89,7 +90,7 @@ void Password::hash256(){
 }*/
 
 const unsigned char* Password::digestTest() const{
-	return hash;
+	return digest;
 }
 
 const char* Password::passR() const{
