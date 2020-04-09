@@ -7,10 +7,8 @@
 
 #include "vPasswordFile.h"
 
-QueueHandle_t passwordQueue;
-
-
-
+QueueHandle_t rsaQueue;
+QueueHandle_t eccQueue;
 
 char randomCharacter(){
 	int min = 32;
@@ -44,7 +42,8 @@ void vPasswordFile(void *pvParameters){
 	while(1){
 		if(i < size){
 			ps[i] = initialize();
-			xQueueSendToFront(passwordQueue, (void*) &ps[i], portMAX_DELAY);
+			xQueueSendToFront(rsaQueue, (void*) &ps[i], portMAX_DELAY);
+			xQueueSendToFront(eccQueue, (void*) &ps[i], portMAX_DELAY);
 			i++;
 		}
 

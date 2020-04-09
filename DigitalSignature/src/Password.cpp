@@ -14,7 +14,6 @@ Password::Password(const char *pass0, const char *salt0) {
 	strcpy(salt, salt0);
 	hash = new unsigned char;
 	hash = NULL;
-	//len = 0;
 }
 
 Password::Password(const Password &cpy){
@@ -28,38 +27,6 @@ Password::Password(const Password &cpy){
 	hash = cpy.hash;
 
 }
-/*
- * const String & String::operator=(const String & s)
-{
-	if (this != &s) {
-		delete[] c_string;
-		c_string = new char[strlen(s.c_string) + 1];
-		strcpy(c_string, s.c_string);
-	}
-	return *this;
-}
-String String::operator+(String &s1) const
-{
-	String sum;
-	delete sum.c_string;
-	sum = new char[strlen(c_string) + strlen(s1.c_string)];
-	strcpy(sum.c_string, c_string);
-	strcat(sum.c_string, s1.c_string);
-	return sum;
-}
- */
-const Password & Password::operator=(const Password &eq){
-	if(this != &eq){
-		delete[] pass;
-		delete[] salt;
-		pass = new char[strlen(eq.pass) + 1];
-		salt = new char[strlen(eq.pass) + 1];
-		strcpy(pass, eq.pass);
-		strcpy(salt, eq.salt);
-	}
-	return *this;
-}
-
 
 
 void Password::hash256(){
@@ -71,8 +38,6 @@ void Password::hash256(){
 
 	hash = (unsigned char*) tmp;
 	delete[] tmp;
-	//delete[] pass;
-	//delete[] salt;
 
 	mbedtls_sha256_ret(hash, len, digest, 0);
 
@@ -81,13 +46,6 @@ void Password::hash256(){
 }
 
 
-/*const unsigned char Password::getDigest(const unsigned char save[]) const{
-	save = new unsigned char[sizeof(digest) + 1]();
-	for (size_t i; i <= sizeof(digest); i++){
-		save[i] = digest[i];
-	}
-	return save;
-}*/
 
 const unsigned char* Password::digestTest() const{
 	return digest;

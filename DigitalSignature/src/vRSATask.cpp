@@ -9,8 +9,8 @@
 #include "vRSATask.h"
 
 
-extern QueueHandle_t passwordQueue;
-Fmutex guard;
+extern QueueHandle_t rsaQueue;
+Fmutex guardRSA;
 
 void vRSATask(void *pvParameters){
 	Password receive;
@@ -22,8 +22,8 @@ void vRSATask(void *pvParameters){
 	mbedtls_ctr_drbg_context ctr;
 
 	while(1){
-		xQueueReceive(passwordQueue, (void*) &receive, portMAX_DELAY);
-		guard.lock();
+		xQueueReceive(rsaQueue, (void*) &receive, portMAX_DELAY);
+		guardRSA.lock();
 
 		receive.hash256();
 
@@ -46,11 +46,13 @@ void vRSATask(void *pvParameters){
 		mbedtls_rsa_pkcs1_decrypt( &rsa, mbedtls_ctr_drbg_random,
 			                                          &ctr, MBEDTLS_RSA_PRIVATE, &rsa.len,
 			                                          buf, res, 1024 );
-		guard.unlock();
-
 	    mbedtls_rsa_free(&rsa);
 	    mbedtls_ctr_drbg_free(&ctr);
 	    mbedtls_entropy_free(&entropy);
+
+	    guardRSA.unlock();
+
+
 
 	}
 }
