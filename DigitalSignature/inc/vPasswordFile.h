@@ -16,9 +16,17 @@
 #include "queue.h"
 #include "Password.h"
 
+typedef struct{
+	char salt[5];
+	char pass[8];
+
+}passSpecifications;
+
 
 void vPasswordFile(void *pvParameters);
 char randomCharacter();
-Password initialize();
+//const char *pass();
+//const char *salt();
+//Password initialize();
 
 #endif /* VPASSWORDFILE_H_ */

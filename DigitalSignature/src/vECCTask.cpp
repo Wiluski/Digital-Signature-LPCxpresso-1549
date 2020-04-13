@@ -9,7 +9,7 @@
 #include "vECCTask.h"
 
 extern QueueHandle_t eccQueue;
-Fmutex guardECC;
+//Fmutex guardECC;
 //#define main_FIRST_BIT (1UL << 0UL);
 
 void vECCTask(void *pvParameters){
@@ -29,7 +29,7 @@ void vECCTask(void *pvParameters){
 	while(1){
 		xQueueReceive(eccQueue, (void*) &eccReceive, portMAX_DELAY);
 
-		guardECC.lock();
+		//guardECC.lock();
 	    mbedtls_ecdsa_init( &sign );
 	    //mbedtls_ecdsa_init( &verify );
 	    mbedtls_ctr_drbg_init( &ctr );
@@ -56,7 +56,7 @@ void vECCTask(void *pvParameters){
 	    mbedtls_ecdsa_free( &sign );
 	    mbedtls_ctr_drbg_free( &ctr );
 	    mbedtls_entropy_free( &entropy );
-	    guardECC.unlock();
+	    //guardECC.unlock();
 	}
 
 }

@@ -5,28 +5,28 @@
  *      Author: Ville Vainio
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
-#include "Fmutex.h"
-#include "DigitalIoPin.h"
-#include "event_groups.h"
 #include "vWatchDog.h"
 
-extern EventGroupHandle_t xEventGroup;
+EventGroupHandle_t xEventGroup;
 
-//#define main_FIRST_BIT (1UL << 0UL);
-//#define main_SECOND_BIT (1UL << 1UL);
-//#define main_THIRD_BIT (1UL << 2UL);
-//#define ALL_SYNC_BITS (main_FIRST_BIT | main_SECOND_BIT | main_THIRD_BIT);
+
 
 void vWatchDog(void *pvParameters){
 
-
+	TickType_t currentTickCount1 = 0;
+	TickType_t currentTickCount2 = 0;
+	EventBits_t xBits;
 	while(1){
-		//xBits = xEventGroupWaitBits(xEventGroup, ALL_SYNC_BITS,
-		//		pdTRUE, pdTRUE, timeWait);
-	}
+		xBits = xEventGroupWaitBits(xEventGroup, MAIN_FIRST_BIT,
+				pdTRUE, pdTRUE, portMAX_DELAY);
+		currentTickCount1 = xTaskGetTickCount();
+		currentTickCount2 = currentTickCount1 - currentTickCount2;
+		if((xBits & MAIN_FIRST_BIT) == MAIN_FIRST_BIT){
+			DEBUGOUT("Ticks from last OK: %lu\r\n", currentTickCount2);
+			xEventGroupClearBits(xEventGroup, MAIN_FIRST_BIT);
+		}
+
+		}
 }
 
 

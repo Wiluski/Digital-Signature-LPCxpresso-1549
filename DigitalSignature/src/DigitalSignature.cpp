@@ -28,10 +28,10 @@
 
 //using namespace std;
 
-
+extern EventGroupHandle_t xEventGroup;
 extern QueueHandle_t rsaQueue;
 extern QueueHandle_t eccQueue;
-#define QUEUE_SIZE 6
+#define QUEUE_SIZE (5)
 
 
 // TODO: insert other include files here
@@ -63,12 +63,12 @@ void vConfigureTimerForRunTimeStats( void ) {
 }
 
 
-void vTestTask(void *pvParameters){
+/*void vTestTask(void *pvParameters){
 
 	while(1){
 
 	}
-}
+}*/
 
 
 int main(void) {
@@ -76,29 +76,28 @@ int main(void) {
 	//initialize the set up hardware
 	prvSetupHardware();
 
-	rsaQueue = xQueueCreate(QUEUE_SIZE, sizeof(Password));
-	eccQueue = xQueueCreate(QUEUE_SIZE, sizeof(Password));
+	rsaQueue = xQueueCreate(QUEUE_SIZE, sizeof(passSpecifications));
+	eccQueue = xQueueCreate(QUEUE_SIZE, sizeof(passSpecifications));
+	xEventGroup = xEventGroupCreate();
 
-
-	xTaskCreate(vTestTask, "TestTask",
-			configMINIMAL_STACK_SIZE *2, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);
-	xTaskCreate(vPasswordFile, "PasswordFile",
-			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);
-	xTaskCreate(vRSATask, "RSATask",
-			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);
-	xTaskCreate(vECCTask, "ECCTask",
-			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);
-	/*xTaskCreate(vWatchDog, "WatchDog",
-			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);
-	xTaskCreate(vPasswordFile, "PasswordFile",
+	/*xTaskCreate(vTestTask, "TestTask",
 			configMINIMAL_STACK_SIZE *2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);*/
+	xTaskCreate(vPasswordFile, "PasswordFile",
+			configMINIMAL_STACK_SIZE * 4, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);
+	xTaskCreate(vRSATask, "RSATask",
+			configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);
+	/*xTaskCreate(vECCTask, "ECCTask",
+			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);*/
+	/*xTaskCreate(vWatchDog, "WatchDog",
+			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);*/
 	/* Start the scheduler */
+	vQueueAddToRegistry(rsaQueue, "rsaQueue");
+	vQueueAddToRegistry(eccQueue, "eccQueue");
 	    vTaskStartScheduler();
 
 	//never arrive here

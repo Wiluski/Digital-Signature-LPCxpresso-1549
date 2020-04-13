@@ -43,9 +43,9 @@
 #include "task.h"
 #include "semphr.h"
 #include "Fmutex.h"
-#include "event_groups.h"
 #include "DigitalIoPin.h"
 #include "Password.h"
+#include "vWatchDog.h"
 
 void vECCTask(void *pvParameters);
 

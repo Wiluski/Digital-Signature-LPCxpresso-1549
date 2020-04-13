@@ -34,6 +34,8 @@
 #include "event_groups.h"
 #include "DigitalIoPin.h"
 #include "Password.h"
+#include "vPasswordFile.h"
+#include "vWatchDog.h"
 
 
 

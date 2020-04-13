@@ -11,17 +11,25 @@ QueueHandle_t rsaQueue;
 QueueHandle_t eccQueue;
 
 void vPasswordFile(void *pvParameters){
+	bool init = false;
+	//passSpecifications s[6];
+	passSpecifications s;
 
-	int size = 6;
-	int i = 0;
-	Password ps[size];
 
 	while(1){
-		if(i < size){
-			ps[i] = initialize();
-			xQueueSendToFront(rsaQueue, (void*) &ps[i], portMAX_DELAY);
-			xQueueSendToFront(eccQueue, (void*) &ps[i], portMAX_DELAY);
-			i++;
+
+		if(init == false){
+			for(int j = 0; j < 6; j++){
+				//passSpecifications s;
+				for(int i = 0; i < 5; i++){
+					s.salt[i] = randomCharacter();
+					}
+				for(int i = 0; i < 8; i++){
+					s.pass[i] = randomCharacter();
+				}
+				xQueueSendToFront(rsaQueue, (void*) &s, portMAX_DELAY);
+			}
+			init = true;
 		}
 
 	}
@@ -34,12 +42,27 @@ char randomCharacter(){
 	return asciiChar;
 }
 
-Password initialize(){
+/*void salt(){
+	passSpecifications s;
+	char saltT[5];
+	for(int i = 0; i < 5; i++){
+		s.salt[i] = randomCharacter();
+		}
+}
+
+void pass(){
+	char passT[8];
+	for(int i = 0; i < 8; i++){
+		passT[i] = randomCharacter();
+	}
+
+}*/
+
+/*Password initialize(){
 	Password init;
-	char* pass;
-	char* salt;
-	pass = new char[8];
-	salt = new char[5];
+
+	char pass[8];
+	char salt[5];
 	for(int i = 0; i < 8; i++){
 		pass[i] = randomCharacter();
 	}
@@ -48,8 +71,8 @@ Password initialize(){
 	}
 	init = Password(pass,salt);
 
-	delete[] pass;
-	delete[] salt;
+	//delete[] pass;
+	//delete[] salt;
 	return init;
-}
+}*/
 
