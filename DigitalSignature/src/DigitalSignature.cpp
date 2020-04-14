@@ -86,15 +86,15 @@ int main(void) {
 	xTaskCreate(vPasswordFile, "PasswordFile",
 			configMINIMAL_STACK_SIZE * 4, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
-	xTaskCreate(vRSATask, "RSATask",
+	/*xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY +1UL),
+			(TaskHandle_t *) NULL);*/
+	xTaskCreate(vECCTask, "ECCTask",
+			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
-	/*xTaskCreate(vECCTask, "ECCTask",
+	xTaskCreate(vWatchDog, "WatchDog",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);*/
-	/*xTaskCreate(vWatchDog, "WatchDog",
-			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);*/
+			(TaskHandle_t *) NULL);
 	/* Start the scheduler */
 	vQueueAddToRegistry(rsaQueue, "rsaQueue");
 	vQueueAddToRegistry(eccQueue, "eccQueue");

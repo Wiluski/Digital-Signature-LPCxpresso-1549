@@ -28,7 +28,7 @@ void vPasswordFile(void *pvParameters){
 				for(int i = 0; i < 8; i++){
 					s.pass[i] = randomCharacter();
 				}
-				xQueueSendToFront(rsaQueue, (void*) &s, portMAX_DELAY);
+				xQueueSendToFront(eccQueue, (void*) &s, portMAX_DELAY);
 			}
 			init = true;
 		}

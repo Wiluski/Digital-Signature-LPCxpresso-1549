@@ -8,13 +8,7 @@
 #ifndef VRSATASK_H_
 #define VRSATASK_H_
 
-#if defined (__USE_LPCOPEN)
-#if defined(NO_BOARD_LIB)
-#include "chip.h"
-#else
-#include "board.h"
-#endif
-#endif
+
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
@@ -41,7 +35,7 @@
 #include "event_groups.h"
 #include "DigitalIoPin.h"
 #include "Password.h"
-#include "vPasswordFile.h"
+//#include "vPasswordFile.h"
 #include "vWatchDog.h"
 
 

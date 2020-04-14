@@ -14,7 +14,7 @@ extern EventGroupHandle_t xEventGroup;
 extern Fmutex guard;
 
 void vRSATask(void *pvParameters){
-	passSpecifications receive;
+	passSpecifications receiveRSA;
 	mbedtls_rsa_context rsa;
 	mbedtls_entropy_context entropy;
 	mbedtls_ctr_drbg_context ctr;
@@ -26,15 +26,18 @@ void vRSATask(void *pvParameters){
 	int ret = 0;
 
 	while(1){
-		xQueueReceive(rsaQueue, (void *) &receive, portMAX_DELAY);
+		xQueueReceive(rsaQueue, (void *) &receiveRSA, portMAX_DELAY);
 		guard.lock();
-		char *tmpPass = new char[sizeof(receive.pass) + 1];
-		char *tmpSalt = new char[sizeof(receive.salt) + 1];
+		char *tmpPass = new char[sizeof(receiveRSA.pass) + 1];
+		char *tmpSalt = new char[sizeof(receiveRSA.salt) + 1];
 
-		strncpy(tmpPass, receive.pass, sizeof(receive.pass) + 1);
-		strncpy(tmpSalt, receive.salt, sizeof(receive.salt) + 1);
+		strncpy(tmpPass, receiveRSA.pass, sizeof(receiveRSA.pass) + 1);
+		strncpy(tmpSalt, receiveRSA.salt, sizeof(receiveRSA.salt) + 1);
 
 		Password *rec = new Password(tmpPass, tmpSalt);
+		if(rec == NULL)
+			goto exit;
+
 		delete[] tmpPass;
 		delete[] tmpSalt;
 
@@ -73,10 +76,14 @@ void vRSATask(void *pvParameters){
 
 	    ret = 0;
 
+
 		exit:
 		while(1);
 
 		guard.unlock();
+
+		xEventGroupSetBits(xEventGroup, MAIN_FIRST_BIT);
+
 	}
 }
 

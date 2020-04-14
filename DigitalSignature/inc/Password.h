@@ -43,4 +43,10 @@ private:
 
 };
 
+typedef struct{
+	char salt[5];
+	char pass[8];
+
+}passSpecifications;
+
 #endif /* Password_H_ */

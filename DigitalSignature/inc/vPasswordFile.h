@@ -16,11 +16,7 @@
 #include "Password.h"
 #include "Fmutex.h"
 
-typedef struct{
-	char salt[5];
-	char pass[8];
 
-}passSpecifications;
 
 
 void vPasswordFile(void *pvParameters);

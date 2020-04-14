@@ -8,7 +8,7 @@
 #include "vWatchDog.h"
 
 EventGroupHandle_t xEventGroup;
-
+extern Fmutex guard;
 
 
 void vWatchDog(void *pvParameters){
@@ -17,16 +17,23 @@ void vWatchDog(void *pvParameters){
 	TickType_t currentTickCount2 = 0;
 	EventBits_t xBits;
 	while(1){
-		xBits = xEventGroupWaitBits(xEventGroup, MAIN_FIRST_BIT,
-				pdTRUE, pdTRUE, portMAX_DELAY);
+		xBits = xEventGroupWaitBits(xEventGroup, (MAIN_FIRST_BIT || MAIN_SECOND_BIT),
+				pdFALSE, pdFALSE, portMAX_DELAY);
+		//xEventGroupWaitBits(xEventGroup, mainFIRST_BIT,pdFALSE, pdFALSE, portMAX_DELAY);
 		currentTickCount1 = xTaskGetTickCount();
 		currentTickCount2 = currentTickCount1 - currentTickCount2;
 		if((xBits & MAIN_FIRST_BIT) == MAIN_FIRST_BIT){
-			DEBUGOUT("Ticks from last OK: %lu\r\n", currentTickCount2);
+			guard.lock();
+			DEBUGOUT("Ticks from last RSA signature: %lu\r\n", currentTickCount2);
 			xEventGroupClearBits(xEventGroup, MAIN_FIRST_BIT);
+			guard.unlock();
+		}else if((xBits & MAIN_SECOND_BIT) == MAIN_SECOND_BIT){
+			guard.lock();
+			DEBUGOUT("Ticks from last ECC signature: %lu\r\n", currentTickCount2);
+			xEventGroupClearBits(xEventGroup, MAIN_SECOND_BIT);
+			guard.unlock();
 		}
-
-		}
+	}
 }
 
 
