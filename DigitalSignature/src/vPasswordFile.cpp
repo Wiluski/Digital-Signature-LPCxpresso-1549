@@ -9,6 +9,7 @@
 
 QueueHandle_t rsaQueue;
 QueueHandle_t eccQueue;
+Fmutex guard;
 
 void vPasswordFile(void *pvParameters){
 	bool init = false;

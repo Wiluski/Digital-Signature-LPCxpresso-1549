@@ -11,51 +11,23 @@
 
 extern QueueHandle_t rsaQueue;
 extern EventGroupHandle_t xEventGroup;
-Fmutex guardRSA;
+extern Fmutex guard;
 
 void vRSATask(void *pvParameters){
 	passSpecifications receive;
 	mbedtls_rsa_context rsa;
 	mbedtls_entropy_context entropy;
 	mbedtls_ctr_drbg_context ctr;
-	unsigned char res[1024];
-	unsigned char buf[512];
-	const char *pers = "rsa_generator";
-	/*Password* test1 = new Password("hello world!", "6asfh4");
-	test1->hash256();
-	unsigned char res[1024];
-	unsigned char buf[512];
+
+	unsigned char bufSign[512];
+	unsigned char bufVerify[512];
 	const char *pers = "rsa_generator";
 
+	int ret = 0;
 
-	mbedtls_rsa_context rsa;
-	mbedtls_entropy_context entropy;
-	mbedtls_ctr_drbg_context ctr;
-
-	mbedtls_ctr_drbg_init(&ctr);
-
-	mbedtls_entropy_init(&entropy);
-
-	mbedtls_ctr_drbg_seed(&ctr, mbedtls_entropy_func, &entropy, (const unsigned char*) pers, strlen(pers));
-	mbedtls_rsa_init(&rsa, MBEDTLS_RSA_PKCS_V15, 0);
-
-	mbedtls_rsa_gen_key(&rsa, mbedtls_ctr_drbg_random, &ctr, 2048, 65537);
-
-	rsa.len = ( mbedtls_mpi_bitlen( &rsa.N ) + 7 ) >> 3;
-
-	mbedtls_rsa_pkcs1_encrypt(&rsa, mbedtls_ctr_drbg_random, &ctr, MBEDTLS_RSA_PUBLIC,
-			sizeof(test1->digestTest()), test1->digestTest(), buf);
-
-
-	mbedtls_rsa_pkcs1_decrypt( &rsa, mbedtls_ctr_drbg_random,
-												  &ctr, MBEDTLS_RSA_PRIVATE, &rsa.len,
-												  buf, res, 1024 );
-	delete test1;
-    mbedtls_rsa_free(&rsa);
-    mbedtls_ctr_drbg_free(&ctr);
-    mbedtls_entropy_free(&entropy);*/
 	while(1){
 		xQueueReceive(rsaQueue, (void *) &receive, portMAX_DELAY);
+		guard.lock();
 		char *tmpPass = new char[sizeof(receive.pass) + 1];
 		char *tmpSalt = new char[sizeof(receive.salt) + 1];
 
@@ -66,31 +38,45 @@ void vRSATask(void *pvParameters){
 		delete[] tmpPass;
 		delete[] tmpSalt;
 
-		/*rec->hash256();
+		rec->hash256();
 
 		mbedtls_ctr_drbg_init(&ctr);
 
 		mbedtls_entropy_init(&entropy);
 
-		mbedtls_ctr_drbg_seed(&ctr, mbedtls_entropy_func, &entropy, (const unsigned char*) pers, strlen(pers));
+		if( (ret = mbedtls_ctr_drbg_seed(&ctr, mbedtls_entropy_func, &entropy,
+				(const unsigned char*) pers, strlen(pers)) ) != 0)
+			goto exit;
+
+
+
 		mbedtls_rsa_init(&rsa, MBEDTLS_RSA_PKCS_V15, 0);
 
-		mbedtls_rsa_gen_key(&rsa, mbedtls_ctr_drbg_random, &ctr, 2048, 65537);
+		if( ( ret = mbedtls_rsa_gen_key(&rsa, mbedtls_ctr_drbg_random,
+				&ctr, 2048, 65537) ) != 0)
+			goto exit;
 
-		rsa.len = ( mbedtls_mpi_bitlen( &rsa.N ) + 7 ) >> 3;
+//		rsa.len = ( mbedtls_mpi_bitlen( &rsa.N ) + 7 ) >> 3;
 
-		mbedtls_rsa_pkcs1_encrypt(&rsa, mbedtls_ctr_drbg_random, &ctr, MBEDTLS_RSA_PUBLIC,
-				sizeof(rec->digestTest()), rec->digestTest(), buf);
+		if( ( ret = mbedtls_rsa_pkcs1_sign( &rsa, NULL, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA256,
+			                                20, rec->digestTest(), bufSign ) ) != 0)
+			goto exit;
 
-
-		mbedtls_rsa_pkcs1_decrypt( &rsa, mbedtls_ctr_drbg_random,
-													  &ctr, MBEDTLS_RSA_PRIVATE, &rsa.len,
-													  buf, res, 1024 );*/
+		if( ( ret = mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA256,
+											20, bufSign, bufVerify ) ) != 0)
+			goto exit;
 
 		delete rec;
-	   /* mbedtls_rsa_free(&rsa);
+	    mbedtls_rsa_free(&rsa);
 	    mbedtls_ctr_drbg_free(&ctr);
-	    mbedtls_entropy_free(&entropy);*/
+	    mbedtls_entropy_free(&entropy);
+
+	    ret = 0;
+
+		exit:
+		while(1);
+
+		guard.unlock();
 	}
 }
 

@@ -8,6 +8,14 @@
 #ifndef VRSATASK_H_
 #define VRSATASK_H_
 
+#if defined (__USE_LPCOPEN)
+#if defined(NO_BOARD_LIB)
+#include "chip.h"
+#else
+#include "board.h"
+#endif
+#endif
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -29,7 +37,6 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "semphr.h"
 #include "Fmutex.h"
 #include "event_groups.h"
 #include "DigitalIoPin.h"
