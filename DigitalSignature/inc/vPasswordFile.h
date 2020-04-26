@@ -21,8 +21,8 @@
 
 void vPasswordFile(void *pvParameters);
 char randomCharacter();
-//const char *pass();
-//const char *salt();
-//Password initialize();
+void sendOne();
+void sendTen();
+void sendHundred();
 
 #endif /* VPASSWORDFILE_H_ */

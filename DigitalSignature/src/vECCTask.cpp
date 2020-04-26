@@ -85,7 +85,7 @@ void vECCTask(void *pvParameters){
 
 	    guard.unlock();
 
-	    xEventGroupSetBits(xEventGroup, MAIN_SECOND_BIT);
+	   // xEventGroupSetBits(xEventGroup, MAIN_SECOND_BIT);
 	}
 
 }

@@ -79,6 +79,7 @@ int main(void) {
 	rsaQueue = xQueueCreate(QUEUE_SIZE, sizeof(passSpecifications));
 	eccQueue = xQueueCreate(QUEUE_SIZE, sizeof(passSpecifications));
 	xEventGroup = xEventGroupCreate();
+	//Board_UARTPutSTR(str)
 
 	/*xTaskCreate(vTestTask, "TestTask",
 			configMINIMAL_STACK_SIZE *2, NULL, (tskIDLE_PRIORITY +1UL),
@@ -86,9 +87,9 @@ int main(void) {
 	xTaskCreate(vPasswordFile, "PasswordFile",
 			configMINIMAL_STACK_SIZE * 4, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
-	/*xTaskCreate(vRSATask, "RSATask",
+	xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);*/
+			(TaskHandle_t *) NULL);
 	xTaskCreate(vECCTask, "ECCTask",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);

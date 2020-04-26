@@ -16,6 +16,7 @@
 #endif
 #endif
 
+#include "board_api.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "Fmutex.h"

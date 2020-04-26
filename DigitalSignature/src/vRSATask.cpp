@@ -82,7 +82,7 @@ void vRSATask(void *pvParameters){
 
 		guard.unlock();
 
-		xEventGroupSetBits(xEventGroup, MAIN_FIRST_BIT);
+		//xEventGroupSetBits(xEventGroup, MAIN_FIRST_BIT);
 
 	}
 }

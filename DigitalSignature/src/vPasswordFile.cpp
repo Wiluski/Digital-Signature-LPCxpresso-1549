@@ -14,24 +14,18 @@ Fmutex guard;
 void vPasswordFile(void *pvParameters){
 	bool init = false;
 	//passSpecifications s[6];
-	passSpecifications s;
+
 
 
 	while(1){
 
 		if(init == false){
-			for(int j = 0; j < 6; j++){
-				//passSpecifications s;
-				for(int i = 0; i < 5; i++){
-					s.salt[i] = randomCharacter();
-					}
-				for(int i = 0; i < 8; i++){
-					s.pass[i] = randomCharacter();
-				}
-				xQueueSendToFront(eccQueue, (void*) &s, portMAX_DELAY);
+				sendOne();
+				sendTen();
+				sendHundred();
+
 			}
 			init = true;
-		}
 
 	}
 }
@@ -43,37 +37,132 @@ char randomCharacter(){
 	return asciiChar;
 }
 
-/*void salt(){
+void sendOne(){
 	passSpecifications s;
-	char saltT[5];
+
+	TickType_t currentTickCountStart = 0;
+	TickType_t currentTickCountECC = 0;
+	TickType_t currentTickCountRSA = 0;
+
 	for(int i = 0; i < 5; i++){
 		s.salt[i] = randomCharacter();
 		}
+	for(int i = 0; i < 8; i++){
+		s.pass[i] = randomCharacter();
+	}
+
+	xQueueSendToFront(rsaQueue, (void*) &s, portMAX_DELAY);
+
+	currentTickCountRSA = currentTickCountStart - xTaskGetTickCount();
+
+	currentTickCountStart = xTaskGetTickCount();
+
+	guard.lock();
+	Board_UARTPutSTR("Ticks for one RSA signature:");
+	Board_UARTPutChar(currentTickCountRSA);
+	Board_UARTPutChar('\n');
+	Board_UARTPutChar('\r');
+	guard.unlock();
+
+	xQueueSendToFront(eccQueue, (void*) &s, portMAX_DELAY);
+	currentTickCountECC = currentTickCountStart - xTaskGetTickCount();
+
+	guard.lock();
+	Board_UARTPutSTR("Ticks for one ECC signature:");
+	Board_UARTPutChar(currentTickCountECC);
+	Board_UARTPutChar('\n');
+	Board_UARTPutChar('\r');
+	guard.unlock();
+
 }
 
-void pass(){
-	char passT[8];
-	for(int i = 0; i < 8; i++){
-		passT[i] = randomCharacter();
+void sendTen(){
+	passSpecifications s;
+
+	TickType_t currentTickCountStart = 0;
+	TickType_t currentTickCountECC = 0;
+	TickType_t currentTickCountRSA = 0;
+
+	for(int j = 0; j < 10; j++){
+		//passSpecifications s;
+		for(int i = 0; i < 5; i++){
+			s.salt[i] = randomCharacter();
+			}
+		for(int i = 0; i < 8; i++){
+			s.pass[i] = randomCharacter();
+		}
+		//currentTickCount1 = xTaskGetTickCount();
+		//currentTickCount2 = currentTickCount1 - currentTickCount2;
+		currentTickCountStart = xTaskGetTickCount();
+
+		xQueueSendToFront(rsaQueue, (void*) &s, portMAX_DELAY);
+
+		currentTickCountRSA += xTaskGetTickCount() - currentTickCountStart;
+
+		currentTickCountStart = xTaskGetTickCount();
+
+		xQueueSendToFront(eccQueue, (void*) &s, portMAX_DELAY);
+		currentTickCountECC += xTaskGetTickCount() - currentTickCountStart;
+
 	}
+	guard.lock();
+	Board_UARTPutSTR("Ticks for 10 RSA signature:");
+	Board_UARTPutChar(currentTickCountRSA);
+	Board_UARTPutChar('\n');
+	Board_UARTPutChar('\r');
+	guard.unlock();
 
-}*/
+	guard.lock();
+	Board_UARTPutSTR("Ticks for 10 ECC signature:");
+	Board_UARTPutChar(currentTickCountECC);
+	Board_UARTPutChar('\n');
+	Board_UARTPutChar('\r');
+	guard.unlock();
+}
 
-/*Password initialize(){
-	Password init;
+void sendHundred(){
+	passSpecifications s;
 
-	char pass[8];
-	char salt[5];
-	for(int i = 0; i < 8; i++){
-		pass[i] = randomCharacter();
+	TickType_t currentTickCountStart = 0;
+	TickType_t currentTickCountECC = 0;
+	TickType_t currentTickCountRSA = 0;
+
+	for(int j = 0; j < 100; j++){
+		//passSpecifications s;
+		for(int i = 0; i < 5; i++){
+			s.salt[i] = randomCharacter();
+			}
+		for(int i = 0; i < 8; i++){
+			s.pass[i] = randomCharacter();
+		}
+		//currentTickCount1 = xTaskGetTickCount();
+		//currentTickCount2 = currentTickCount1 - currentTickCount2;
+		currentTickCountStart = xTaskGetTickCount();
+
+		xQueueSendToFront(rsaQueue, (void*) &s, portMAX_DELAY);
+
+		currentTickCountRSA += xTaskGetTickCount() - currentTickCountStart;
+
+		currentTickCountStart = xTaskGetTickCount();
+
+		xQueueSendToFront(eccQueue, (void*) &s, portMAX_DELAY);
+		currentTickCountECC += xTaskGetTickCount() - currentTickCountStart;
+
 	}
-	for(int i = 0; i < 5; i++){
-		salt[i] = randomCharacter();
-	}
-	init = Password(pass,salt);
+	guard.lock();
+	Board_UARTPutSTR("Ticks for 100 RSA signature:");
+	Board_UARTPutChar(currentTickCountRSA);
+	Board_UARTPutChar('\n');
+	Board_UARTPutChar('\r');
+	guard.unlock();
 
-	//delete[] pass;
-	//delete[] salt;
-	return init;
-}*/
+	guard.lock();
+	Board_UARTPutSTR("Ticks for 100 ECC signature:");
+	Board_UARTPutChar(currentTickCountECC);
+	Board_UARTPutChar('\n');
+	Board_UARTPutChar('\r');
+	guard.unlock();
+}
+
+
 

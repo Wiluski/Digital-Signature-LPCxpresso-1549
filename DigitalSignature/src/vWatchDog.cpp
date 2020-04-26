@@ -24,12 +24,20 @@ void vWatchDog(void *pvParameters){
 		currentTickCount2 = currentTickCount1 - currentTickCount2;
 		if((xBits & MAIN_FIRST_BIT) == MAIN_FIRST_BIT){
 			guard.lock();
-			DEBUGOUT("Ticks from last RSA signature: %lu\r\n", currentTickCount2);
+			Board_UARTPutSTR("Ticks from last RSA signature:");
+			Board_UARTPutChar(currentTickCount2);
+			Board_UARTPutChar('\n');
+			Board_UARTPutChar('\r');
+			//DEBUGOUT("Ticks from last RSA signature: %lu\r\n", currentTickCount2);
 			xEventGroupClearBits(xEventGroup, MAIN_FIRST_BIT);
 			guard.unlock();
 		}else if((xBits & MAIN_SECOND_BIT) == MAIN_SECOND_BIT){
 			guard.lock();
-			DEBUGOUT("Ticks from last ECC signature: %lu\r\n", currentTickCount2);
+			Board_UARTPutSTR("Ticks from last ECC signature:");
+			Board_UARTPutChar(currentTickCount2);
+			Board_UARTPutChar('\n');
+			Board_UARTPutChar('\r');
+			//DEBUGOUT("Ticks from last ECC signature: %lu\r\n", currentTickCount2);
 			xEventGroupClearBits(xEventGroup, MAIN_SECOND_BIT);
 			guard.unlock();
 		}
