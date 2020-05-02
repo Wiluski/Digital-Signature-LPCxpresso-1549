@@ -10,8 +10,11 @@
 
 
 extern QueueHandle_t rsaQueue;
-extern EventGroupHandle_t xEventGroup;
-extern Fmutex guard;
+//extern EventGroupHandle_t xEventGroup;
+extern SemaphoreHandle_t binaryRSA;
+extern Fmutex guardRSA;
+//extern DigitalIoPin sw1, sw2, sw3;
+Fmutex debugRSA;
 
 void vRSATask(void *pvParameters){
 	passSpecifications receiveRSA;
@@ -19,15 +22,26 @@ void vRSATask(void *pvParameters){
 	mbedtls_entropy_context entropy;
 	mbedtls_ctr_drbg_context ctr;
 
+	int exponent[5] = {3, 5, 17, 257, 65537};
+	int bits[5] = {128, 1024, 2048, 3072, 4096};
+	TickType_t currentTickCount;
+	TickType_t currentTickCountRSA;
+	//TickType_t currentTickCountECC;
 	unsigned char bufSign[512];
 	unsigned char bufVerify[512];
-	const char *pers = "rsa_generator";
-
-	int ret = 0;
+	const char *persRsa = "rsa";
+	//bool done = false;
+	int count = 0;
 
 	while(1){
-		xQueueReceive(rsaQueue, (void *) &receiveRSA, portMAX_DELAY);
-		guard.lock();
+		xQueueReceive(rsaQueue, (void*) &receiveRSA, portMAX_DELAY);
+
+
+		guardRSA.lock();
+
+		currentTickCount = xTaskGetTickCount();
+
+
 		char *tmpPass = new char[sizeof(receiveRSA.pass) + 1];
 		char *tmpSalt = new char[sizeof(receiveRSA.salt) + 1];
 
@@ -35,8 +49,7 @@ void vRSATask(void *pvParameters){
 		strncpy(tmpSalt, receiveRSA.salt, sizeof(receiveRSA.salt) + 1);
 
 		Password *rec = new Password(tmpPass, tmpSalt);
-		if(rec == NULL)
-			goto exit;
+
 
 		delete[] tmpPass;
 		delete[] tmpSalt;
@@ -47,42 +60,53 @@ void vRSATask(void *pvParameters){
 
 		mbedtls_entropy_init(&entropy);
 
-		if( (ret = mbedtls_ctr_drbg_seed(&ctr, mbedtls_entropy_func, &entropy,
-				(const unsigned char*) pers, strlen(pers)) ) != 0)
-			goto exit;
-
-
-
 		mbedtls_rsa_init(&rsa, MBEDTLS_RSA_PKCS_V15, 0);
 
-		if( ( ret = mbedtls_rsa_gen_key(&rsa, mbedtls_ctr_drbg_random,
-				&ctr, 2048, 65537) ) != 0)
-			goto exit;
+		mbedtls_ctr_drbg_seed(&ctr, mbedtls_entropy_func, &entropy,
+						(const unsigned char*) persRsa, strlen(persRsa));
 
-//		rsa.len = ( mbedtls_mpi_bitlen( &rsa.N ) + 7 ) >> 3;
 
-		if( ( ret = mbedtls_rsa_pkcs1_sign( &rsa, NULL, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA256,
-			                                20, rec->digestTest(), bufSign ) ) != 0)
-			goto exit;
 
-		if( ( ret = mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA256,
-											20, bufSign, bufVerify ) ) != 0)
-			goto exit;
+
+		mbedtls_rsa_gen_key(&rsa, mbedtls_ctr_drbg_random,
+						&ctr, 128, 3);
+
+
+		mbedtls_rsa_pkcs1_sign( &rsa, NULL, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA256,
+					                                20, rec->digestTest(), bufSign );
+
+
+		mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA256,
+													20, bufSign, bufVerify );
+
 
 		delete rec;
+		//delete test;
+
 	    mbedtls_rsa_free(&rsa);
+
 	    mbedtls_ctr_drbg_free(&ctr);
+
 	    mbedtls_entropy_free(&entropy);
 
-	    ret = 0;
+
+	   // ret = 0;
+	    currentTickCountRSA = xTaskGetTickCount() - currentTickCount;
 
 
-		exit:
-		while(1);
+	    debugRSA.lock();
+		DEBUGOUT("Ticks from last RSA signature: %lu \r\n", currentTickCountRSA);
+		debugRSA.unlock();
 
-		guard.unlock();
 
-		//xEventGroupSetBits(xEventGroup, MAIN_FIRST_BIT);
+	    guardRSA.unlock();
+
+	    //xSemaphoreGive(binaryRSA);
+		//exit:
+		//while(1);
+
+		//guard.unlock();
+		//xEventGroupSetBits(xEventGroup, MAIN_SECOND_BIT);
 
 	}
 }

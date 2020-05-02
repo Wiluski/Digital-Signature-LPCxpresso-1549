@@ -19,7 +19,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
-#include "Password.h"
+//#include "Password.h"
+//#include "DigitalIoPin.h"
 #include "vPasswordFile.h"
 #include "vRSATask.h"
 #include "vWatchDog.h"
@@ -28,15 +29,17 @@
 
 //using namespace std;
 
-extern EventGroupHandle_t xEventGroup;
+//extern EventGroupHandle_t xEventGroup;
 extern QueueHandle_t rsaQueue;
 extern QueueHandle_t eccQueue;
-#define QUEUE_SIZE (5)
-
+#define QUEUE_SIZE (100)
 
 // TODO: insert other include files here
 
-//DigitalIoPin *sw1, *sw2, *sw3;
+//DigitalIoPin sw1, sw2, sw3;
+DigitalIoPin sw1(0,17, DigitalIoPin::pullup, true);
+DigitalIoPin sw2(1,11, DigitalIoPin::pullup, true);
+DigitalIoPin sw3(1,9, DigitalIoPin::pullup, true);
 //TimerHandle_t xAutoReloadTimerRsa = NULL, xAutoReloadTimerEcc = NULL;
 
 static void prvSetupHardware(void)
@@ -44,10 +47,12 @@ static void prvSetupHardware(void)
     SystemCoreClockUpdate();
     Board_Init();
 
+    DEBUGINIT();
     /* Initial LED0 state is off */
     Board_LED_Set(0, false);
     Board_LED_Set(1, false);
     Board_LED_Set(2, false);
+
 
 }
 
@@ -59,14 +64,19 @@ void vConfigureTimerForRunTimeStats( void ) {
     LPC_SCTSMALL1->CONFIG = SCT_CONFIG_32BIT_COUNTER;
     LPC_SCTSMALL1->CTRL_U = SCT_CTRL_PRE_L(255) | SCT_CTRL_CLRCTR_L; // set prescaler to 256 (255 + 1), and start timer
 }
-
 }
 
 
+
 /*void vTestTask(void *pvParameters){
+	data read;
 
 	while(1){
-
+		//xQueueReceive(xQueue, (void*) &read, portMAX_DELAY);
+		//DEBUGOUT("%lu \r\n", read.tickCount);
+		//__WFI();
+		counttohun();
+		DEBUGOUT("%lu \r\n", xTaskGetTickCountFromISR());
 	}
 }*/
 
@@ -76,29 +86,34 @@ int main(void) {
 	//initialize the set up hardware
 	prvSetupHardware();
 
-	rsaQueue = xQueueCreate(QUEUE_SIZE, sizeof(passSpecifications));
-	eccQueue = xQueueCreate(QUEUE_SIZE, sizeof(passSpecifications));
-	xEventGroup = xEventGroupCreate();
-	//Board_UARTPutSTR(str)
+	rsaQueue = xQueueCreate(10, sizeof(passSpecifications));
+	eccQueue = xQueueCreate(10, sizeof(passSpecifications));
+
+	//xEventGroup = xEventGroupCreate();
+
 
 	/*xTaskCreate(vTestTask, "TestTask",
 			configMINIMAL_STACK_SIZE *2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);*/
 	xTaskCreate(vPasswordFile, "PasswordFile",
-			configMINIMAL_STACK_SIZE * 4, NULL, (tskIDLE_PRIORITY +1UL),
+			configMINIMAL_STACK_SIZE * 2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
 	xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
 	xTaskCreate(vECCTask, "ECCTask",
-			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
+			configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
-	xTaskCreate(vWatchDog, "WatchDog",
+	/*xTaskCreate(vWatchDog, "WatchDog",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);
+			(TaskHandle_t *) NULL);*/
+
+	DEBUGOUT("TASKS RUNNING\r\n");
 	/* Start the scheduler */
 	vQueueAddToRegistry(rsaQueue, "rsaQueue");
 	vQueueAddToRegistry(eccQueue, "eccQueue");
+	//vTaskDelay(100);
+
 	    vTaskStartScheduler();
 
 	//never arrive here

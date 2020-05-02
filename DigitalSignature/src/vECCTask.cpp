@@ -9,10 +9,90 @@
 #include "vECCTask.h"
 
 extern QueueHandle_t eccQueue;
-extern EventGroupHandle_t xEventGroup;
-extern Fmutex guard;
+//extern EventGroupHandle_t xEventGroup;
+extern Fmutex guardECC;
+Fmutex debugECC;
+Fmutex choosingMutex;
+extern SemaphoreHandle_t binaryECC;
+//extern DigitalIoPin sw1, sw2, sw3;
 
+/*bool breakCase(){
+
+	return true;
+}
 //#define main_FIRST_BIT (1UL << 0UL);
+int choose(){
+	int count = 0;
+	int cases = 1;
+
+	choosingMutex.lock();
+	while(!sw1.read()){
+		switch(cases){
+
+		case 1:
+			DEBUGOUT("choose elliptic curve\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1*\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			break;
+		case 2:
+			DEBUGOUT("choose elliptic curve\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1*\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			break;
+		case 3:
+			DEBUGOUT("choose elliptic curve\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1*\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			break;
+		case 4:
+			DEBUGOUT("choose elliptic curve\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1*\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			break;
+		case 5:
+			DEBUGOUT("choose elliptic curve\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1\r\n");
+			DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1*\r\n");
+			break;
+		}
+		while(!sw2.read() || !sw3.read()){
+			if(sw2.read()){
+				while(sw2.read());
+				if(cases == 5){
+					cases = 1;
+				}else{
+					cases++;
+				}
+			}
+			if(sw3.read()){
+				while(sw2.read());
+				if(cases <= 1){
+					cases = 5;
+				}else{
+					cases--;
+				}
+			}
+	}
+}
+	choosingMutex.unlock();
+	count = cases;
+	return count;
+}*/
 
 void vECCTask(void *pvParameters){
 	//Password test1("asdasd", "124jf");
@@ -23,15 +103,24 @@ void vECCTask(void *pvParameters){
 	mbedtls_entropy_context entropy_ecc;
 	mbedtls_ctr_drbg_context ctr_ecc;
 
+	TickType_t currentTickCount;
+	TickType_t currentTickCountECC;
+
 	//unsigned char hash[] = test1.digestTest();
 	unsigned char sig[512];
 	size_t sig_len;
-	const char *pers = "ecdsa";
+	const char *persEcc = "ecdsa";
+	int count = 0;
 
 	while(1){
+
 		xQueueReceive(eccQueue, (void*) &eccReceive, portMAX_DELAY);
 
-		guard.lock();
+		guardECC.lock();
+
+		//count = choose();
+
+		currentTickCount = xTaskGetTickCountFromISR();
 
 		char *tmpPass = new char[sizeof(eccReceive.pass) + 1];
 		char *tmpSalt = new char[sizeof(eccReceive.salt) + 1];
@@ -41,38 +130,56 @@ void vECCTask(void *pvParameters){
 
 		Password *rec_ecc = new Password(tmpPass, tmpSalt);
 
-		if(rec_ecc == NULL)
-			goto exit;
 
 		delete[] tmpPass;
 		delete[] tmpSalt;
 
 		rec_ecc->hash256();
 
-		//guardECC.lock();
 	    mbedtls_ecdsa_init( &sign_ecc );
-	    //mbedtls_ecdsa_init( &verify );
+
 	    mbedtls_ctr_drbg_init( &ctr_ecc );
+
 	    mbedtls_entropy_init( &entropy_ecc );
 
-
 	    mbedtls_ctr_drbg_seed( &ctr_ecc, mbedtls_entropy_func, &entropy_ecc,
-	                                   (const unsigned char *) pers,
-	                                   strlen( pers ) );
+	                                   (const unsigned char *) persEcc,
+	                                   strlen( persEcc ) );
 
-	    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS,
-	                                  mbedtls_ctr_drbg_random, &ctr_ecc );
+	    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS1, mbedtls_ctr_drbg_random,
+	    		&ctr_ecc );
+
+	    /*switch(count){
+	    case 1:
+	    	mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS1,
+	    		                                  mbedtls_ctr_drbg_random, &ctr_ecc );
+	    	break;
+	    case 2:
+	    	mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS2,
+	    		                                  mbedtls_ctr_drbg_random, &ctr_ecc );
+	    	break;
+	    case 3:
+	    	mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS3,
+	    		                                  mbedtls_ctr_drbg_random, &ctr_ecc );
+	    	break;
+	    case 4:
+	    	mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS4,
+	    		                                  mbedtls_ctr_drbg_random, &ctr_ecc );
+	    	break;
+	    case 5:
+	    	mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS5,
+	    		                                  mbedtls_ctr_drbg_random, &ctr_ecc );
+	    	break;
+	    }*/
+
 
 	    mbedtls_ecdsa_write_signature( &sign_ecc, MBEDTLS_MD_SHA256,rec_ecc->digestTest(),
 	    		sizeof( rec_ecc->digestTest() ),sig,
 				&sig_len, mbedtls_ctr_drbg_random, &ctr_ecc );
 
-	    /*mbedtls_ecp_group_copy( &verify.grp, &sign.grp );
-	    mbedtls_ecp_copy( &verify.Q, &sign.Q );*/
 
 	    mbedtls_ecdsa_read_signature( &sign_ecc, rec_ecc->digestTest(),
 	    		sizeof( rec_ecc->digestTest() ), sig, sig_len );
-	   // mbedtls_ecdsa_free( &verify );
 
 	    delete rec_ecc;
 
@@ -80,12 +187,20 @@ void vECCTask(void *pvParameters){
 	    mbedtls_ctr_drbg_free( &ctr_ecc );
 	    mbedtls_entropy_free( &entropy_ecc );
 
-	    exit:
-		while(1);
+		currentTickCountECC = xTaskGetTickCountFromISR() - currentTickCount;
 
-	    guard.unlock();
 
-	   // xEventGroupSetBits(xEventGroup, MAIN_SECOND_BIT);
+		debugECC.lock();
+		DEBUGOUT("Ticks from last ECC signature: %lu\r\n", currentTickCountECC);
+		debugECC.unlock();
+
+		guardECC.unlock();
+
+		xSemaphoreGive(binaryECC);
+	    //exit:
+		//while(1);
+
+	   // xEventGroupSetBits(xEventGroup, MAIN_THIRD_BIT);
 	}
 
 }

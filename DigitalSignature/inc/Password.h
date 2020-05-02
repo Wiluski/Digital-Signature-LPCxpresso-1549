@@ -38,7 +38,7 @@ public:
 private:
 	char *pass;
 	char *salt;
-	unsigned char *hash;
+	//unsigned char *hash;
 	unsigned char digest[32] = {};
 
 };

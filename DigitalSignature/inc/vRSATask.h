@@ -29,14 +29,23 @@
 
 #endif
 
-#include "FreeRTOS.h"
-#include "task.h"
+/*#if defined (__USE_LPCOPEN)
+#if defined(NO_BOARD_LIB)
+#include "chip.h"
+#else
+#include "board.h"
+#endif
+#endif*/
+
+//#include "FreeRTOS.h"
+//#include "task.h"
+//#include "semphr.h"
 #include "Fmutex.h"
-#include "event_groups.h"
 #include "DigitalIoPin.h"
 #include "Password.h"
+#include "board_api.h"
 //#include "vPasswordFile.h"
-#include "vWatchDog.h"
+//#include "vWatchDog.h"
 
 
 

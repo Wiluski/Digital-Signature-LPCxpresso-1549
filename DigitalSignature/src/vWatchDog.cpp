@@ -7,40 +7,50 @@
 
 #include "vWatchDog.h"
 
-EventGroupHandle_t xEventGroup;
-extern Fmutex guard;
+//EventGroupHandle_t xEventGroup;
+//extern Fmutex guard;
 
 
 void vWatchDog(void *pvParameters){
 
-	TickType_t currentTickCount1 = 0;
-	TickType_t currentTickCount2 = 0;
-	EventBits_t xBits;
+	/*TickType_t currentTickCount;
+	TickType_t currentTickCountRSA;
+	TickType_t currentTickCountECC;
+	EventBits_t xBit, xBitRSA, xBitECC;*/
 	while(1){
-		xBits = xEventGroupWaitBits(xEventGroup, (MAIN_FIRST_BIT || MAIN_SECOND_BIT),
+	/*	xBit = xEventGroupWaitBits(xEventGroup, (MAIN_FIRST_BIT),
 				pdFALSE, pdFALSE, portMAX_DELAY);
-		//xEventGroupWaitBits(xEventGroup, mainFIRST_BIT,pdFALSE, pdFALSE, portMAX_DELAY);
-		currentTickCount1 = xTaskGetTickCount();
-		currentTickCount2 = currentTickCount1 - currentTickCount2;
-		if((xBits & MAIN_FIRST_BIT) == MAIN_FIRST_BIT){
+
+		if((xBit & MAIN_FIRST_BIT ) == MAIN_FIRST_BIT){
+			currentTickCount = xTaskGetTickCountFromISR();
+		}
+
+		xBitRSA = xEventGroupWaitBits(xEventGroup, (MAIN_SECOND_BIT),
+				pdFALSE, pdFALSE, portMAX_DELAY);
+		if((xBitRSA & MAIN_SECOND_BIT) == MAIN_SECOND_BIT){
+			currentTickCountRSA = xTaskGetTickCountFromISR() - currentTickCount;
 			guard.lock();
-			Board_UARTPutSTR("Ticks from last RSA signature:");
-			Board_UARTPutChar(currentTickCount2);
-			Board_UARTPutChar('\n');
-			Board_UARTPutChar('\r');
-			//DEBUGOUT("Ticks from last RSA signature: %lu\r\n", currentTickCount2);
-			xEventGroupClearBits(xEventGroup, MAIN_FIRST_BIT);
-			guard.unlock();
-		}else if((xBits & MAIN_SECOND_BIT) == MAIN_SECOND_BIT){
-			guard.lock();
-			Board_UARTPutSTR("Ticks from last ECC signature:");
-			Board_UARTPutChar(currentTickCount2);
-			Board_UARTPutChar('\n');
-			Board_UARTPutChar('\r');
-			//DEBUGOUT("Ticks from last ECC signature: %lu\r\n", currentTickCount2);
-			xEventGroupClearBits(xEventGroup, MAIN_SECOND_BIT);
+
+			DEBUGOUT("Ticks from last RSA signature: %lu\r\n", currentTickCountRSA);
+
 			guard.unlock();
 		}
+		xBitECC = xEventGroupWaitBits(xEventGroup, (MAIN_THIRD_BIT),
+						pdFALSE, pdFALSE, portMAX_DELAY);
+
+		//xEventGroupWaitBits(xEventGroup, mainFIRST_BIT,pdFALSE, pdFALSE, portMAX_DELAY);
+		if((xBitECC & MAIN_THIRD_BIT) == MAIN_THIRD_BIT){
+			currentTickCountECC = xTaskGetTickCountFromISR() - currentTickCountRSA;
+					guard.lock();
+
+					DEBUGOUT("Ticks from last ECC signature: %lu\r\n", currentTickCountECC);
+
+					guard.unlock();
+
+		}
+		xEventGroupClearBits(xEventGroup, ALL_BITS);
+*/
+
 	}
 }
 

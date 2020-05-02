@@ -37,15 +37,20 @@
 /*
  * Uncomment to force use of a specific curve
  */
-#define ECPARAMS    MBEDTLS_ECP_DP_SECP192R1
+#define ECPARAMS1   MBEDTLS_ECP_DP_SECP192R1
+#define ECPARAMS2	MBEDTLS_ECP_DP_SECP224R1
+#define ECPARAMS3	MBEDTLS_ECP_DP_SECP256R1
+#define ECPARAMS4	MBEDTLS_ECP_DP_SECP384R1
+#define ECPARAMS5	MBEDTLS_ECP_DP_SECP521R1
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
+//#include "FreeRTOS.h"
+//#include "task.h"
+//#include "semphr.h"
 #include "Fmutex.h"
 #include "DigitalIoPin.h"
 #include "Password.h"
-#include "vWatchDog.h"
+#include "board_api.h"
+//#include "vWatchDog.h"
 
 void vECCTask(void *pvParameters);
 
