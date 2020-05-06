@@ -7,6 +7,7 @@
 
 #include <Password.h>
 
+//constructor
 Password::Password(const char *pass0, const char *salt0) {
 	pass = new char[strlen(pass0) + 1];
 	salt = new char[strlen(salt0) + 1];
@@ -15,6 +16,7 @@ Password::Password(const char *pass0, const char *salt0) {
 	//hash = new unsigned char[];
 
 }
+//copy constructor
 
 Password::Password(const Password &cpy){
 	pass = new char[strlen(cpy.pass) + 1];
@@ -28,6 +30,7 @@ Password::Password(const Password &cpy){
 
 }
 
+//if needed to save a new password to class
 const Password & Password::operator=(const Password &eq){
 	if(this != &eq){
 		delete[] pass;
@@ -40,7 +43,7 @@ const Password & Password::operator=(const Password &eq){
 	return *this;
 }
 
-
+//hashing of the parameters to digest
 void Password::hash256(){
 	mbedtls_md_context_t sha_ctx;
 	//int ret;
@@ -79,16 +82,18 @@ void Password::hash256(){
 }
 
 
-
+//return the digest
 const unsigned char* Password::digestTest() const{
 	return digest;
 }
 
+//test of returning the password
 const char* Password::passR() const{
 	return pass;
 }
 
 
+//deconstructor
 Password::~Password() {
 	//delete hash;
 	delete[] salt;

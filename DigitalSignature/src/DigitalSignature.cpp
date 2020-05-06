@@ -37,9 +37,6 @@ extern QueueHandle_t eccQueue;
 // TODO: insert other include files here
 
 //DigitalIoPin sw1, sw2, sw3;
-DigitalIoPin sw1(0,17, DigitalIoPin::pullup, true);
-DigitalIoPin sw2(1,11, DigitalIoPin::pullup, true);
-DigitalIoPin sw3(1,9, DigitalIoPin::pullup, true);
 //TimerHandle_t xAutoReloadTimerRsa = NULL, xAutoReloadTimerEcc = NULL;
 
 static void prvSetupHardware(void)

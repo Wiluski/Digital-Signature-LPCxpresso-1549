@@ -7,18 +7,20 @@
 
 #include "vWatchDog.h"
 
-//EventGroupHandle_t xEventGroup;
-//extern Fmutex guard;
+EventGroupHandle_t xEventGroup;
+extern Fmutex guard;
 
 
 void vWatchDog(void *pvParameters){
 
-	/*TickType_t currentTickCount;
+	//task to handle the time recording, will be implemented fully on a future date
+
+	TickType_t currentTickCount;
 	TickType_t currentTickCountRSA;
 	TickType_t currentTickCountECC;
-	EventBits_t xBit, xBitRSA, xBitECC;*/
+	EventBits_t xBit, xBitRSA, xBitECC;
 	while(1){
-	/*	xBit = xEventGroupWaitBits(xEventGroup, (MAIN_FIRST_BIT),
+		xBit = xEventGroupWaitBits(xEventGroup, (MAIN_FIRST_BIT),
 				pdFALSE, pdFALSE, portMAX_DELAY);
 
 		if((xBit & MAIN_FIRST_BIT ) == MAIN_FIRST_BIT){
@@ -38,7 +40,7 @@ void vWatchDog(void *pvParameters){
 		xBitECC = xEventGroupWaitBits(xEventGroup, (MAIN_THIRD_BIT),
 						pdFALSE, pdFALSE, portMAX_DELAY);
 
-		//xEventGroupWaitBits(xEventGroup, mainFIRST_BIT,pdFALSE, pdFALSE, portMAX_DELAY);
+		xEventGroupWaitBits(xEventGroup, mainFIRST_BIT,pdFALSE, pdFALSE, portMAX_DELAY);
 		if((xBitECC & MAIN_THIRD_BIT) == MAIN_THIRD_BIT){
 			currentTickCountECC = xTaskGetTickCountFromISR() - currentTickCountRSA;
 					guard.lock();
@@ -49,7 +51,7 @@ void vWatchDog(void *pvParameters){
 
 		}
 		xEventGroupClearBits(xEventGroup, ALL_BITS);
-*/
+
 
 	}
 }

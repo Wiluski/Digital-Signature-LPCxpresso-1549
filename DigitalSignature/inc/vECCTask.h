@@ -37,6 +37,7 @@
 /*
  * Uncomment to force use of a specific curve
  */
+//different curves for ecc
 #define ECPARAMS1   MBEDTLS_ECP_DP_SECP192R1
 #define ECPARAMS2	MBEDTLS_ECP_DP_SECP224R1
 #define ECPARAMS3	MBEDTLS_ECP_DP_SECP256R1

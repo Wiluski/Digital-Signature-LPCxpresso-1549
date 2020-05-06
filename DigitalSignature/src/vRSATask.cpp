@@ -17,6 +17,9 @@ extern Fmutex guardRSA;
 Fmutex debugRSA;
 
 void vRSATask(void *pvParameters){
+
+	//due to limitations of the microcontroller the rsa functions don't work properly
+	//need to be implemented in a later date, configurations don't allow file handling
 	passSpecifications receiveRSA;
 	mbedtls_rsa_context rsa;
 	mbedtls_entropy_context entropy;
@@ -26,7 +29,7 @@ void vRSATask(void *pvParameters){
 	int bits[5] = {128, 1024, 2048, 3072, 4096};
 	TickType_t currentTickCount;
 	TickType_t currentTickCountRSA;
-	//TickType_t currentTickCountECC;
+
 	unsigned char bufSign[512];
 	unsigned char bufVerify[512];
 	const char *persRsa = "rsa";
