@@ -18,11 +18,64 @@ extern SemaphoreHandle_t binaryECC;
 
 //#define main_FIRST_BIT (1UL << 0UL);
 
+void menu(int in){
+	switch(in){
+	case 1:
+		debugECC.lock();
+		DEBUGOUT("Choose encryption type: \r\n");
+		DEBUGOUT("1 <-\r\n");
+		DEBUGOUT("2 \r\n");
+		DEBUGOUT("3 \r\n");
+		DEBUGOUT("4 \r\n");
+		DEBUGOUT("5 \r\n");
+		debugECC.unlock();
+		break;
+	case 2:
+		debugECC.lock();
+		DEBUGOUT("Choose encryption type: \r\n");
+		DEBUGOUT("1 \r\n");
+		DEBUGOUT("2 <-\r\n");
+		DEBUGOUT("3 \r\n");
+		DEBUGOUT("4 \r\n");
+		DEBUGOUT("5 \r\n");
+		debugECC.unlock();
+		break;
+	case 3:
+		debugECC.lock();
+		DEBUGOUT("Choose encryption type: \r\n");
+		DEBUGOUT("1 \r\n");
+		DEBUGOUT("2 \r\n");
+		DEBUGOUT("3 <-\r\n");
+		DEBUGOUT("4 \r\n");
+		DEBUGOUT("5 \r\n");
+		debugECC.unlock();
+		break;
+	case 4:
+		debugECC.lock();
+		DEBUGOUT("Choose encryption type: \r\n");
+		DEBUGOUT("1 \r\n");
+		DEBUGOUT("2 \r\n");
+		DEBUGOUT("3 \r\n");
+		DEBUGOUT("4 <-\r\n");
+		DEBUGOUT("5 \r\n");
+		debugECC.unlock();
+		break;
+	case 5:
+		debugECC.lock();
+		DEBUGOUT("Choose encryption type: \r\n");
+		DEBUGOUT("1 \r\n");
+		DEBUGOUT("2 \r\n");
+		DEBUGOUT("3 \r\n");
+		DEBUGOUT("4 \r\n");
+		DEBUGOUT("5 <-\r\n");
+		debugECC.unlock();
+		break;
+	}
+}
+
 
 void vECCTask(void *pvParameters){
-	//Password test1("asdasd", "124jf");
-	//test1.hash256();
-	//int ret;
+
 
 	//static context / structs to handle ecdsa and password
 	passSpecifications eccReceive;
@@ -34,11 +87,15 @@ void vECCTask(void *pvParameters){
 	TickType_t currentTickCount;
 	TickType_t currentTickCountECC;
 
-	//unsigned char hash[] = test1.digestTest();
+
 	unsigned char sig[512];
 	size_t sig_len;
 	const char *persEcc = "ecdsa";
-	int count = 0;
+
+	int input = 1;
+	DigitalIoPin sw1(0,17,DigitalIoPin::pullup, true);
+	DigitalIoPin sw2(1,11,DigitalIoPin::pullup, true);
+	DigitalIoPin sw3(1, 9,DigitalIoPin::pullup, true);
 
 	while(1){
 
@@ -48,7 +105,30 @@ void vECCTask(void *pvParameters){
 		//guard the ecc task with a mutex
 		guardECC.lock();
 
-		//count = choose();
+		//get the input value of which curve to use
+		do{
+			if(sw2.read()){
+				while(sw2.read());
+				//DEBUGOUT("OK 2");
+				if(input == 5)
+					input = 1;
+				else{
+					input++;
+				}
+				menu(input);
+			}
+			if(sw3.read()){
+				while(sw3.read());
+				//DEBUGOUT("OK 3");
+				if(input == 1)
+					input = 5;
+				else{
+					input--;
+				}
+				menu(input);
+			}
+
+		}while(!sw1.read());
 
 		//get the beginning tick count
 		currentTickCount = xTaskGetTickCountFromISR();
@@ -82,8 +162,29 @@ void vECCTask(void *pvParameters){
 	                                   (const unsigned char *) persEcc,
 	                                   strlen( persEcc ) );
 
-	    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS1, mbedtls_ctr_drbg_random,
-	    		&ctr_ecc );
+	    switch(input){
+	    case 1:
+		    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS1, mbedtls_ctr_drbg_random,
+		    		&ctr_ecc );
+		    break;
+	    case 2:
+		    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS2, mbedtls_ctr_drbg_random,
+		    		&ctr_ecc );
+	    	break;
+	    case 3:
+		    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS3, mbedtls_ctr_drbg_random,
+		    		&ctr_ecc );
+		    break;
+	    case 4:
+		    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS4, mbedtls_ctr_drbg_random,
+		    		&ctr_ecc );
+		    break;
+	    case 5:
+		    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS5, mbedtls_ctr_drbg_random,
+		    		&ctr_ecc );
+		    break;
+	    }
+
 
 
 	    mbedtls_ecdsa_write_signature( &sign_ecc, MBEDTLS_MD_SHA256,rec_ecc->digestTest(),

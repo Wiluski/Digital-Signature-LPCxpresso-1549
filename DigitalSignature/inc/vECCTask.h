@@ -55,5 +55,7 @@
 
 void vECCTask(void *pvParameters);
 
+void menu(int in);
+
 
 #endif /* VECCTASK_H_ */

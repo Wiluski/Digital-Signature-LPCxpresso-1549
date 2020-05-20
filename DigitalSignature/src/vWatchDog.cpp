@@ -40,7 +40,7 @@ void vWatchDog(void *pvParameters){
 		xBitECC = xEventGroupWaitBits(xEventGroup, (MAIN_THIRD_BIT),
 						pdFALSE, pdFALSE, portMAX_DELAY);
 
-		xEventGroupWaitBits(xEventGroup, mainFIRST_BIT,pdFALSE, pdFALSE, portMAX_DELAY);
+		xEventGroupWaitBits(xEventGroup, MAIN_FIRST_BIT,pdFALSE, pdFALSE, portMAX_DELAY);
 		if((xBitECC & MAIN_THIRD_BIT) == MAIN_THIRD_BIT){
 			currentTickCountECC = xTaskGetTickCountFromISR() - currentTickCountRSA;
 					guard.lock();

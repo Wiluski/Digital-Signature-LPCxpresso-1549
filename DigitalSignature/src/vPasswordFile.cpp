@@ -24,16 +24,18 @@ void vPasswordFile(void *pvParameters){
 
 	while(1){
 
-		if(init == false){
+		for(int i = 0; i < 5; i++){
+			s.salt[i] = randomCharacter();
+			}
+		for(int i = 0; i < 8; i++){
+			s.pass[i] = randomCharacter();
+			}
+		/* send values of pass and salt to the ecc queue to be handled in ECC
+		 * Task*/
+		xQueueSendToFront(eccQueue, (void*) &s, portMAX_DELAY);
 
-			for(int j = 0; j < 10; j++){
-					//passSpecifications s;
-				for(int i = 0; i < 5; i++){
-					s.salt[i] = randomCharacter();
-					}
-				for(int i = 0; i < 8; i++){
-					s.pass[i] = randomCharacter();
-					}
+		//wait for the ecc task to run the encryption and verification
+		xSemaphoreTake(binaryECC, portMAX_DELAY);
 
 //					xQueueSendToFront(rsaQueue, (void*) &s, portMAX_DELAY);
 
@@ -42,20 +44,6 @@ void vPasswordFile(void *pvParameters){
 //					vTaskDelay(portMAX_DELAY);
 					//xSemaphoreTake(binaryRSA, portMAX_DELAY);
 					//vTaskDelay(1000);
-
-
-				/* send ten values of pass and salt to the ecc queue to be handled in ECC
-				 * Task*/
-					xQueueSendToFront(eccQueue, (void*) &s, portMAX_DELAY);
-
-					//wait for the ecc task to run the encryption and verification
-					xSemaphoreTake(binaryECC, portMAX_DELAY);
-
-			}
-			init = true;
-
-			}
-			//init = true;
 
 	}
 }
