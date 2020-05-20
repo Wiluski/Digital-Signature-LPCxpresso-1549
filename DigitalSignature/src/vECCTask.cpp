@@ -23,51 +23,51 @@ void menu(int in){
 	case 1:
 		debugECC.lock();
 		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("1 <-\r\n");
-		DEBUGOUT("2 \r\n");
-		DEBUGOUT("3 \r\n");
-		DEBUGOUT("4 \r\n");
-		DEBUGOUT("5 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 <-- \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 \r\n");
 		debugECC.unlock();
 		break;
 	case 2:
 		debugECC.lock();
 		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("1 \r\n");
-		DEBUGOUT("2 <-\r\n");
-		DEBUGOUT("3 \r\n");
-		DEBUGOUT("4 \r\n");
-		DEBUGOUT("5 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 <-- \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 \r\n");
 		debugECC.unlock();
 		break;
 	case 3:
 		debugECC.lock();
 		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("1 \r\n");
-		DEBUGOUT("2 \r\n");
-		DEBUGOUT("3 <-\r\n");
-		DEBUGOUT("4 \r\n");
-		DEBUGOUT("5 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 <-- \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 \r\n");
 		debugECC.unlock();
 		break;
 	case 4:
 		debugECC.lock();
 		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("1 \r\n");
-		DEBUGOUT("2 \r\n");
-		DEBUGOUT("3 \r\n");
-		DEBUGOUT("4 <-\r\n");
-		DEBUGOUT("5 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 <-- \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 \r\n");
 		debugECC.unlock();
 		break;
 	case 5:
 		debugECC.lock();
 		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("1 \r\n");
-		DEBUGOUT("2 \r\n");
-		DEBUGOUT("3 \r\n");
-		DEBUGOUT("4 \r\n");
-		DEBUGOUT("5 <-\r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 \r\n");
+		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 <-- \r\n");
 		debugECC.unlock();
 		break;
 	}
