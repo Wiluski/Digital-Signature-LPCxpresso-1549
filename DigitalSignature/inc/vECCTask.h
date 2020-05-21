@@ -48,14 +48,12 @@
 //#include "task.h"
 //#include "semphr.h"
 #include "Fmutex.h"
-#include "DigitalIoPin.h"
 #include "Password.h"
 #include "board_api.h"
 //#include "vWatchDog.h"
 
 void vECCTask(void *pvParameters);
 
-void menu(int in);
 
 
 #endif /* VECCTASK_H_ */

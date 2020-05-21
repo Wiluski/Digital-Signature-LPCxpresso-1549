@@ -12,66 +12,12 @@ extern QueueHandle_t eccQueue;
 //extern EventGroupHandle_t xEventGroup;
 extern Fmutex guardECC;
 Fmutex debugECC;
-Fmutex choosingMutex;
+
 extern SemaphoreHandle_t binaryECC;
 //extern DigitalIoPin sw1, sw2, sw3;
 
 //#define main_FIRST_BIT (1UL << 0UL);
 
-void menu(int in){
-	switch(in){
-	case 1:
-		debugECC.lock();
-		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 <-- \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 \r\n");
-		debugECC.unlock();
-		break;
-	case 2:
-		debugECC.lock();
-		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 <-- \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 \r\n");
-		debugECC.unlock();
-		break;
-	case 3:
-		debugECC.lock();
-		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 <-- \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 \r\n");
-		debugECC.unlock();
-		break;
-	case 4:
-		debugECC.lock();
-		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 <-- \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 \r\n");
-		debugECC.unlock();
-		break;
-	case 5:
-		debugECC.lock();
-		DEBUGOUT("Choose encryption type: \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP192R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP224R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP256R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP384R1 \r\n");
-		DEBUGOUT("MBEDTLS_ECP_DP_SECP521R1 <-- \r\n");
-		debugECC.unlock();
-		break;
-	}
-}
 
 
 void vECCTask(void *pvParameters){
@@ -92,43 +38,17 @@ void vECCTask(void *pvParameters){
 	size_t sig_len;
 	const char *persEcc = "ecdsa";
 
-	int input = 1;
-	DigitalIoPin sw1(0,17,DigitalIoPin::pullup, true);
-	DigitalIoPin sw2(1,11,DigitalIoPin::pullup, true);
-	DigitalIoPin sw3(1, 9,DigitalIoPin::pullup, true);
-
 	while(1){
 
+		vTaskDelay(100);
 		//receive password struct
 		xQueueReceive(eccQueue, (void*) &eccReceive, portMAX_DELAY);
 
+
 		//guard the ecc task with a mutex
-		guardECC.lock();
+		//guardECC.lock();
 
-		//get the input value of which curve to use
-		do{
-			if(sw2.read()){
-				while(sw2.read());
-				//DEBUGOUT("OK 2");
-				if(input == 5)
-					input = 1;
-				else{
-					input++;
-				}
-				menu(input);
-			}
-			if(sw3.read()){
-				while(sw3.read());
-				//DEBUGOUT("OK 3");
-				if(input == 1)
-					input = 5;
-				else{
-					input--;
-				}
-				menu(input);
-			}
 
-		}while(!sw1.read());
 
 		//get the beginning tick count
 		currentTickCount = xTaskGetTickCountFromISR();
@@ -162,7 +82,8 @@ void vECCTask(void *pvParameters){
 	                                   (const unsigned char *) persEcc,
 	                                   strlen( persEcc ) );
 
-	    switch(input){
+
+	   switch(eccReceive.value){
 	    case 1:
 		    mbedtls_ecdsa_genkey( &sign_ecc, ECPARAMS1, mbedtls_ctr_drbg_random,
 		    		&ctr_ecc );
@@ -210,7 +131,7 @@ void vECCTask(void *pvParameters){
 		DEBUGOUT("Ticks from last ECC signature: %lu\r\n", currentTickCountECC);
 		debugECC.unlock();
 
-		guardECC.unlock();
+		//guardECC.unlock();
 
 		//release the task
 		xSemaphoreGive(binaryECC);

@@ -19,11 +19,10 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
-//#include "Password.h"
-//#include "DigitalIoPin.h"
+
 #include "vPasswordFile.h"
-#include "vRSATask.h"
-#include "vWatchDog.h"
+//#include "vRSATask.h"
+//#include "vWatchDog.h"
 #include "vECCTask.h"
 #include "ITM_write.h"
 
@@ -93,19 +92,23 @@ int main(void) {
 	/*xTaskCreate(vTestTask, "TestTask",
 			configMINIMAL_STACK_SIZE *2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);*/
+
 	//creating task to handle the password file as an class due to microcontroller
 	//limitations
 	xTaskCreate(vPasswordFile, "PasswordFile",
 			configMINIMAL_STACK_SIZE * 2, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
+
 	//task to handle rsa encryption and decryption verification
-	xTaskCreate(vRSATask, "RSATask",
+	/*xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);
+			(TaskHandle_t *) NULL);*/
+
 	//task to handle ECC encryption and verification
 	xTaskCreate(vECCTask, "ECCTask",
 			configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY +1UL),
 			(TaskHandle_t *) NULL);
+
 	//task to be handled to record the time of the encryptions and verifications
 	/*xTaskCreate(vWatchDog, "WatchDog",
 			configMINIMAL_STACK_SIZE*2, NULL, (tskIDLE_PRIORITY +1UL),

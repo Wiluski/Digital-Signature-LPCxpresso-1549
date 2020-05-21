@@ -15,14 +15,12 @@
 #include "queue.h"
 #include "Password.h"
 #include "Fmutex.h"
-
+#include "DigitalIoPin.h"
 
 
 
 void vPasswordFile(void *pvParameters);
 char randomCharacter();
-void sendOne();
-void sendTen();
-void sendHundred();
+void menu(int in);
 
 #endif /* VPASSWORDFILE_H_ */

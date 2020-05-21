@@ -46,7 +46,9 @@ private:
 typedef struct{
 	char salt[5];
 	char pass[8];
-
+	int valueECC;
+	int exp;
+	int nbit;
 }passSpecifications;
 
 #endif /* Password_H_ */

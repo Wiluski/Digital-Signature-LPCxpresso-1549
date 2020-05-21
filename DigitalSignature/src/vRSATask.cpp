@@ -25,8 +25,6 @@ void vRSATask(void *pvParameters){
 	mbedtls_entropy_context entropy;
 	mbedtls_ctr_drbg_context ctr;
 
-	int exponent[5] = {3, 5, 17, 257, 65537};
-	int bits[5] = {128, 1024, 2048, 3072, 4096};
 	TickType_t currentTickCount;
 	TickType_t currentTickCountRSA;
 
@@ -69,10 +67,8 @@ void vRSATask(void *pvParameters){
 						(const unsigned char*) persRsa, strlen(persRsa));
 
 
-
-
 		mbedtls_rsa_gen_key(&rsa, mbedtls_ctr_drbg_random,
-						&ctr, 128, 3);
+						&ctr, receiveRSA.nbit, receiveRSA.exp);
 
 
 		mbedtls_rsa_pkcs1_sign( &rsa, NULL, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA256,
