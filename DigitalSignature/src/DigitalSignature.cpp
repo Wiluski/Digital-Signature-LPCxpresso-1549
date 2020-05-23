@@ -21,7 +21,7 @@
 #include "semphr.h"
 
 #include "vPasswordFile.h"
-//#include "vRSATask.h"
+#include "vRSATask.h"
 //#include "vWatchDog.h"
 #include "vECCTask.h"
 #include "ITM_write.h"
@@ -100,9 +100,9 @@ int main(void) {
 			(TaskHandle_t *) NULL);
 
 	//task to handle rsa encryption and decryption verification
-	/*xTaskCreate(vRSATask, "RSATask",
+	xTaskCreate(vRSATask, "RSATask",
 			configMINIMAL_STACK_SIZE*4, NULL, (tskIDLE_PRIORITY +1UL),
-			(TaskHandle_t *) NULL);*/
+			(TaskHandle_t *) NULL);
 
 	//task to handle ECC encryption and verification
 	xTaskCreate(vECCTask, "ECCTask",

@@ -212,13 +212,13 @@ void vPasswordFile(void *pvParameters){
 			s.pass[i] = randomCharacter();
 			}
 
-		while(1){
+		debug.lock();
+		DEBUGOUT("Choose encryption type: \r\n");
+		DEBUGOUT("RSA <--\r\n");
+		DEBUGOUT("ECC \r\n");
+		debug.unlock();
 
-			debug.lock();
-			DEBUGOUT("Choose encryption type: \r\n");
-			DEBUGOUT("RSA <--\r\n");
-			DEBUGOUT("ECC \r\n");
-			debug.unlock();
+		while(1){
 
 			if(sw2.read()){
 				while(sw2.read());
@@ -303,15 +303,17 @@ void vPasswordFile(void *pvParameters){
 						break;
 					}
 			}
+
+			debug.lock();
+			DEBUGOUT("Choose bits to use: \r\n");
+			DEBUGOUT("128 <-- \r\n");
+			DEBUGOUT("1024 \r\n");
+			DEBUGOUT("2048 \r\n");
+			DEBUGOUT("3072 \r\n");
+			debug.unlock();
+
 			while(1){
 
-				debug.lock();
-				DEBUGOUT("Choose bits to use: \r\n");
-				DEBUGOUT("128 <-- \r\n");
-				DEBUGOUT("1024 \r\n");
-				DEBUGOUT("2048 \r\n");
-				DEBUGOUT("3072 \r\n");
-				debug.unlock();
 
 				if(sw2.read()){
 					while(sw2.read());

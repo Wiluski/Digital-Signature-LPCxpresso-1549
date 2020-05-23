@@ -25,9 +25,9 @@ void vECCTask(void *pvParameters){
 
 	//static context / structs to handle ecdsa and password
 	passSpecifications eccReceive;
-	mbedtls_ecdsa_context sign_ecc/*, verify*/;
-	mbedtls_entropy_context entropy_ecc;
-	mbedtls_ctr_drbg_context ctr_ecc;
+	//mbedtls_ecdsa_context sign_ecc/*, verify*/;
+	//mbedtls_entropy_context entropy_ecc;
+	//mbedtls_ctr_drbg_context ctr_ecc;
 
 	//use ticks to record the values and time it takes for the ECC encryption
 	TickType_t currentTickCount;
@@ -47,8 +47,6 @@ void vECCTask(void *pvParameters){
 
 		//guard the ecc task with a mutex
 		//guardECC.lock();
-
-
 
 		//get the beginning tick count
 		currentTickCount = xTaskGetTickCountFromISR();
@@ -72,7 +70,7 @@ void vECCTask(void *pvParameters){
 
 		/*initialize all the required structures for ecc
 		 * and run the functions for ecc signature*/
-	    mbedtls_ecdsa_init( &sign_ecc );
+	   /* mbedtls_ecdsa_init( &sign_ecc );
 
 	    mbedtls_ctr_drbg_init( &ctr_ecc );
 
@@ -114,13 +112,13 @@ void vECCTask(void *pvParameters){
 
 
 	    mbedtls_ecdsa_read_signature( &sign_ecc, rec_ecc->digestTest(),
-	    		sizeof( rec_ecc->digestTest() ), sig, sig_len );
+	    		sizeof( rec_ecc->digestTest() ), sig, sig_len );*/
 
 	    delete rec_ecc;
 
-	    mbedtls_ecdsa_free( &sign_ecc );
+	 /*   mbedtls_ecdsa_free( &sign_ecc );
 	    mbedtls_ctr_drbg_free( &ctr_ecc );
-	    mbedtls_entropy_free( &entropy_ecc );
+	    mbedtls_entropy_free( &entropy_ecc );*/
 
 	    //take the time of the ecc signature
 		currentTickCountECC = xTaskGetTickCountFromISR() - currentTickCount;

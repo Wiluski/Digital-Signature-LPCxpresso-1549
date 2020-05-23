@@ -21,18 +21,18 @@ void vRSATask(void *pvParameters){
 	//due to limitations of the microcontroller the rsa functions don't work properly
 	//need to be implemented in a later date, configurations don't allow file handling
 	passSpecifications receiveRSA;
-	mbedtls_rsa_context rsa;
-	mbedtls_entropy_context entropy;
-	mbedtls_ctr_drbg_context ctr;
+	//mbedtls_rsa_context rsa;
+	//mbedtls_entropy_context entropy;
+	//mbedtls_ctr_drbg_context ctr;
 
 	TickType_t currentTickCount;
 	TickType_t currentTickCountRSA;
 
-	unsigned char bufSign[512];
+	/*unsigned char bufSign[512];
 	unsigned char bufVerify[512];
 	const char *persRsa = "rsa";
 	//bool done = false;
-	int count = 0;
+	int count = 0;*/
 
 	while(1){
 		xQueueReceive(rsaQueue, (void*) &receiveRSA, portMAX_DELAY);
@@ -57,7 +57,7 @@ void vRSATask(void *pvParameters){
 
 		rec->hash256();
 
-		mbedtls_ctr_drbg_init(&ctr);
+	/*	mbedtls_ctr_drbg_init(&ctr);
 
 		mbedtls_entropy_init(&entropy);
 
@@ -76,17 +76,17 @@ void vRSATask(void *pvParameters){
 
 
 		mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA256,
-													20, bufSign, bufVerify );
+													20, bufSign, bufVerify );*/
 
 
 		delete rec;
 		//delete test;
 
-	    mbedtls_rsa_free(&rsa);
+	  /*  mbedtls_rsa_free(&rsa);
 
 	    mbedtls_ctr_drbg_free(&ctr);
 
-	    mbedtls_entropy_free(&entropy);
+	    mbedtls_entropy_free(&entropy);*/
 
 
 	   // ret = 0;
@@ -100,7 +100,7 @@ void vRSATask(void *pvParameters){
 
 	    guardRSA.unlock();
 
-	    //xSemaphoreGive(binaryRSA);
+	    xSemaphoreGive(binaryRSA);
 		//exit:
 		//while(1);
 
